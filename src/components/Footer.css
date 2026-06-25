@@ -1,0 +1,24 @@
+.footer {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: #111;
+  padding: 30px 5%;
+  color: #d3b06d;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.footer-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.1rem;
+}
+
+@media(max-width: 768px) {
+  .footer {
+    flex-direction: column;
+    text-align: center;
+  }
+}

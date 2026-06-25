@@ -1,0 +1,96 @@
+.value-section {
+  padding: 100px 5%;
+  background: #110d0a;
+  color: #fff;
+}
+
+.value-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.value-header {
+  text-align: center;
+  margin-bottom: 50px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.value-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 80px;
+}
+
+.v-card {
+  background: #090909;
+  border: 1px solid rgba(211, 176, 109, 0.2);
+  padding: 40px 30px;
+  text-align: center;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.v-card:hover {
+  transform: translateY(-5px);
+  border-color: #d3b06d;
+}
+
+.v-card h4 {
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+  line-height: 1.4;
+}
+
+.v-card p {
+  color: #aaa;
+  font-size: 0.95rem;
+}
+
+.experience-future-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+}
+
+.experience-box p, .future-box p {
+  line-height: 1.7;
+  color: #ddd;
+  margin-bottom: 15px;
+}
+
+.future-list {
+  list-style: none;
+  margin-top: 20px;
+}
+
+.future-list li {
+  margin-bottom: 15px;
+  color: #ddd;
+  line-height: 1.5;
+  padding-left: 25px;
+  position: relative;
+}
+
+.future-list li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: #d3b06d;
+  font-weight: bold;
+}
+
+.future-list strong {
+  color: #fff;
+}
+
+@media(max-width: 900px) {
+  .value-cards {
+    grid-template-columns: 1fr;
+  }
+  .experience-future-grid {
+    grid-template-columns: 1fr;
+  }
+}
