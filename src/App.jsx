@@ -1,4 +1,6 @@
 import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -7,21 +9,33 @@ import ValueProposition from './components/ValueProposition';
 import Products from './components/Products';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+import Login from './components/Auth/Login';
+import Register from './components/Auth/Register';
+
+const Home = () => (
+  <>
+    <Hero />
+    <About />
+    <Services />
+    <ValueProposition />
+    <Products />
+    <Contact />
+  </>
+);
 
 function App() {
   return (
-    <>
+    <AuthProvider>
       <Header />
       <main>
-        <Hero />
-        <About />
-        <Services />
-        <ValueProposition />
-        <Products />
-        <Contact />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/registro" element={<Register />} />
+        </Routes>
       </main>
       <Footer />
-    </>
+    </AuthProvider>
   );
 }
 
