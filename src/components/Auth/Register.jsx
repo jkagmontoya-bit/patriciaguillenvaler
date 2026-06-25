@@ -16,7 +16,7 @@ const Register = () => {
     setError('');
     try {
       await register(email, password, name);
-      navigate('/');
+      navigate('/dashboard');
     } catch (err) {
       setError('Error al registrar. Intenta con otra contraseña o correo.');
     }

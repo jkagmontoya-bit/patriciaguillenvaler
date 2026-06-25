@@ -15,7 +15,7 @@ const Login = () => {
     setError('');
     try {
       await login(email, password);
-      navigate('/');
+      navigate('/dashboard');
     } catch (err) {
       setError('Error al iniciar sesión. Verifica tus credenciales.');
     }
