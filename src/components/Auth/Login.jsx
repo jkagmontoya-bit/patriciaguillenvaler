@@ -7,7 +7,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { login } = useAuth();
+  const { login, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -18,6 +18,15 @@ const Login = () => {
       navigate('/dashboard');
     } catch (err) {
       setError('Error al iniciar sesión. Verifica tus credenciales.');
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      await loginWithGoogle();
+      navigate('/dashboard');
+    } catch (err) {
+      setError(`Error con Google: ${err.message}`);
     }
   };
 
@@ -43,6 +52,16 @@ const Login = () => {
           />
           <button type="submit" className="btn">Entrar</button>
         </form>
+        
+        <div className="auth-separator">
+          <span>O</span>
+        </div>
+        
+        <button onClick={handleGoogleLogin} className="btn-google">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" />
+          Continuar con Google
+        </button>
+
         <p className="auth-switch">
           ¿No tienes una cuenta? <Link to="/registro">Regístrate aquí</Link>
         </p>

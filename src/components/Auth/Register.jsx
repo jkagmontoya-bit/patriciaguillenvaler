@@ -8,7 +8,7 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { register } = useAuth();
+  const { register, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -19,6 +19,15 @@ const Register = () => {
       navigate('/dashboard');
     } catch (err) {
       setError(`Error: ${err.message}`);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      await loginWithGoogle();
+      navigate('/dashboard');
+    } catch (err) {
+      setError(`Error con Google: ${err.message}`);
     }
   };
 
@@ -52,6 +61,16 @@ const Register = () => {
           />
           <button type="submit" className="btn">Registrarse</button>
         </form>
+        
+        <div className="auth-separator">
+          <span>O</span>
+        </div>
+        
+        <button onClick={handleGoogleLogin} className="btn-google">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" />
+          Regístrate con Google
+        </button>
+
         <p className="auth-switch">
           ¿Ya tienes una cuenta? <Link to="/login">Inicia sesión</Link>
         </p>
