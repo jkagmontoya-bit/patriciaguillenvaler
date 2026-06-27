@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
+import BookAppointmentModal from './BookAppointmentModal';
+import CartModal from './CartModal';
 import './Header.css';
 
 const Header = () => {
   const { user, logout } = useAuth();
+  const { totalItems } = useCart();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   return (
     <header className="header">
@@ -29,6 +35,13 @@ const Header = () => {
           <Link className="btn" to="/login">Acceder</Link>
         )}
       </div>
+      <button className="btn2" style={{marginLeft: '15px'}} onClick={() => setIsCartOpen(true)}>
+        🛒 ({totalItems})
+      </button>
+      <button className="btn" style={{marginLeft: '10px'}} onClick={() => setIsModalOpen(true)}>Agenda tu cita</button>
+      
+      <BookAppointmentModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <CartModal isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </header>
   );
 };

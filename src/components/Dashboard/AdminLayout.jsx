@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import './AdminLayout.css';
 
-const AdminLayout = ({ children }) => {
+const AdminLayout = ({ children, activeTab, setActiveTab }) => {
   const { logout, user } = useAuth();
-  const [activeTab, setActiveTab] = useState('citas');
 
   return (
     <div className="admin-layout">
