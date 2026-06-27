@@ -1,0 +1,82 @@
+.appointments-module {
+  width: 100%;
+}
+
+.module-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.module-header h3 {
+  font-size: 1.2rem;
+  color: #fff;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.admin-table th, .admin-table td {
+  padding: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.admin-table th {
+  color: #d3b06d;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+}
+
+.admin-table td {
+  color: #ddd;
+  font-size: 0.95rem;
+}
+
+.admin-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.status-badge.pendiente {
+  background: rgba(255, 193, 7, 0.15);
+  color: #ffc107;
+}
+
+.status-badge.confirmada {
+  background: rgba(40, 167, 69, 0.15);
+  color: #28a745;
+}
+
+.action-btn {
+  background: transparent;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+  margin-right: 10px;
+  font-size: 0.85rem;
+  text-decoration: underline;
+}
+
+.action-btn:hover {
+  color: #fff;
+}
+
+.action-btn.edit:hover {
+  color: #d3b06d;
+}
