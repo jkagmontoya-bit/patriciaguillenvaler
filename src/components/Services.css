@@ -1,6 +1,5 @@
 .hero-services-accordion {
   width: 100%;
-  max-width: 380px;
   background: rgba(15, 10, 5, 0.45);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -9,6 +8,21 @@
   padding: 30px;
   z-index: 2;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+/* Custom Scrollbar for the accordion */
+.hero-services-accordion::-webkit-scrollbar {
+  width: 6px;
+}
+.hero-services-accordion::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+.hero-services-accordion::-webkit-scrollbar-thumb {
+  background: rgba(211, 176, 109, 0.5);
+  border-radius: 8px;
 }
 
 .accordion-main-title {
@@ -89,7 +103,6 @@
 
 @media(max-width: 900px) {
   .hero-services-accordion {
-    max-width: 100%;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
   }
 }
