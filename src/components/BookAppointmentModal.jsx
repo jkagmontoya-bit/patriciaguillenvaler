@@ -1,12 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { db } from '../firebase/config';
 import { collection, addDoc } from 'firebase/firestore';
 import './BookAppointmentModal.css';
 
-const BookAppointmentModal = ({ isOpen, onClose }) => {
-  const [formData, setFormData] = useState({ client: '', service: '', date: '', time: '', status: 'Pendiente' });
+const BookAppointmentModal = ({ isOpen, onClose, initialService }) => {
+  const [formData, setFormData] = useState({ client: '', service: initialService || '', date: '', time: '', status: 'Pendiente' });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setFormData(prev => ({ ...prev, service: initialService || '' }));
+    }
+  }, [isOpen, initialService]);
 
   if (!isOpen) return null;
 
@@ -47,7 +53,11 @@ const BookAppointmentModal = ({ isOpen, onClose }) => {
               <select required value={formData.service} onChange={e => setFormData({...formData, service: e.target.value})}>
                 <option value="" disabled>Selecciona un Tratamiento</option>
                 <option value="Facial Esencial">Facial Esencial</option>
-                <option value="Tratamiento Premium">Tratamiento Premium</option>
+                <option value="Facial Hidratante">Facial Hidratante</option>
+                <option value="Premium con Ácido Hialurónico">Premium con Ácido Hialurónico</option>
+                <option value="Premium con Exosomas">Premium con Exosomas</option>
+                <option value="Limpieza Facial Profunda">Limpieza Facial Profunda</option>
+                <option value="Evaluación & Diagnóstico">Evaluación & Diagnóstico</option>
                 <option value="Consulta Dermatológica">Consulta Dermatológica</option>
               </select>
               <input type="date" required value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} />

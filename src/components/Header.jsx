@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
@@ -11,6 +11,20 @@ const Header = () => {
   const { totalItems } = useCart();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState('');
+
+  useEffect(() => {
+    const handleOpenBooking = (e) => {
+      if (e.detail) {
+        setSelectedService(e.detail);
+      } else {
+        setSelectedService('');
+      }
+      setIsModalOpen(true);
+    };
+    window.addEventListener('openBooking', handleOpenBooking);
+    return () => window.removeEventListener('openBooking', handleOpenBooking);
+  }, []);
 
   return (
     <header className="header">
@@ -40,7 +54,7 @@ const Header = () => {
       </button>
       <button className="btn" style={{marginLeft: '10px'}} onClick={() => setIsModalOpen(true)}>Agenda tu cita</button>
       
-      <BookAppointmentModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <BookAppointmentModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} initialService={selectedService} />
       <CartModal isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </header>
   );

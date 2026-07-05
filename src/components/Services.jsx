@@ -58,6 +58,16 @@ const Services = () => {
             
             <div className={`accordion-content ${openIndex === index ? 'open' : ''}`}>
               <p>{service.description}</p>
+              <button 
+                className="btn" 
+                style={{marginTop: '15px', padding: '8px 15px', fontSize: '0.85rem'}} 
+                onClick={(e) => { 
+                  e.stopPropagation(); 
+                  window.dispatchEvent(new CustomEvent('openBooking', {detail: service.title}));
+                }}
+              >
+                Agendar este tratamiento
+              </button>
             </div>
           </div>
         ))}
