@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Services.css';
 
 const services = [
@@ -29,29 +29,37 @@ const services = [
 ];
 
 const Services = () => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   return (
     <section id="servicios" className="services-section">
-      <div className="services-header">
+      <div className="services-header" style={{ cursor: 'pointer' }} onClick={() => setIsExpanded(!isExpanded)}>
         <h3 className="text-gold">TRATAMIENTOS</h3>
-        <h2 className="section-title font-serif">Servicios Especializados</h2>
+        <h2 className="section-title font-serif">
+          Servicios Especializados {isExpanded ? '▲' : '▼'}
+        </h2>
         <p className="subtitle">
           Cada servicio ha sido diseñado con protocolos personalizados para las necesidades reales de tu piel.
         </p>
       </div>
 
-      <div className="services-grid">
-        {services.map((service, index) => (
-          <div key={index} className="service-card">
-            <h4 className="font-serif">{service.title}</h4>
-            <div className="divider"></div>
-            <p>{service.description}</p>
+      {isExpanded && (
+        <>
+          <div className="services-grid">
+            {services.map((service, index) => (
+              <div key={index} className="service-card">
+                <h4 className="font-serif">{service.title}</h4>
+                <div className="divider"></div>
+                <p>{service.description}</p>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      
-      <div className="services-footer">
-        <p>Todos los tratamientos incluyen una evaluación inicial personalizada y recomendaciones para el cuidado en casa.</p>
-      </div>
+          
+          <div className="services-footer">
+            <p>Todos los tratamientos incluyen una evaluación inicial personalizada y recomendaciones para el cuidado en casa.</p>
+          </div>
+        </>
+      )}
     </section>
   );
 };
