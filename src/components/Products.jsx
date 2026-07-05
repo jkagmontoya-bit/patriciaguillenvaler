@@ -44,7 +44,6 @@ const Products = () => {
             Cada producto disponible en el estudio ha sido escogido con criterio profesional, pensando en la calidad, la seguridad y los resultados reales que puedes esperar.
           </p>
         </div>
-        </div>
         {isExpanded && (
           <div className="products-image">
             <img src="/ordinary.jpg" alt="Productos The Ordinary" />
