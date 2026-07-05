@@ -1,6 +1,7 @@
 import React from 'react';
 import ProfileCard from './ProfileCard';
 import Services from './Services';
+import Products from './Products';
 import './Hero.css';
 
 const Hero = () => {
@@ -8,7 +9,10 @@ const Hero = () => {
     <section className="hero" id="inicio">
       <div className="overlay"></div>
       
-      <Services />
+      <div className="hero-accordions-container">
+        <Services />
+        <Products />
+      </div>
 
       <div className="content">
         <p className="small text-gold">BIENVENIDO(A) A NUESTRO ESTUDIO</p>
