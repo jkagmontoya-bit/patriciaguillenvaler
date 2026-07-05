@@ -5,7 +5,8 @@
   padding: 150px 6% 100px;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
+  gap: 40px;
 }
 
 .overlay {
@@ -84,7 +85,7 @@
 
 @media(max-width: 900px) {
   .hero {
-    flex-direction: column;
+    flex-direction: column-reverse;
     align-items: center;
     text-align: center;
     padding-top: 120px;

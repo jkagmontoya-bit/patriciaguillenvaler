@@ -1,11 +1,15 @@
 import React from 'react';
 import ProfileCard from './ProfileCard';
+import Services from './Services';
 import './Hero.css';
 
 const Hero = () => {
   return (
     <section className="hero" id="inicio">
       <div className="overlay"></div>
+      
+      <Services />
+
       <div className="content">
         <p className="small text-gold">BIENVENIDO(A) A NUESTRO ESTUDIO</p>
         <h1 className="font-serif">Patricia<br/>Guillén Valer</h1>
