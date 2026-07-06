@@ -1,0 +1,59 @@
+.generic-page {
+  padding: 150px 5% 100px;
+  max-width: 900px;
+  margin: 0 auto;
+  color: #ddd;
+  min-height: 80vh;
+  font-family: 'Inter', sans-serif;
+}
+
+.generic-page h1 {
+  color: #d3b06d;
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+  margin-bottom: 50px;
+  text-align: center;
+}
+
+.generic-page h2 {
+  color: #fff;
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  margin-top: 50px;
+  margin-bottom: 25px;
+}
+
+.generic-page p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 25px;
+  font-weight: 300;
+}
+
+.grid-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.grid-features > div {
+  background: rgba(15, 10, 5, 0.5);
+  padding: 25px;
+  border-radius: 8px;
+  border: 1px solid rgba(211, 176, 109, 0.1);
+}
+
+.grid-features h4 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+@media(max-width: 768px) {
+  .generic-page {
+    padding-top: 120px;
+  }
+  .generic-page h1 {
+    font-size: 2.2rem;
+  }
+}

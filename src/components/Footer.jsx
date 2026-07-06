@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Footer.css';
 
 const Footer = () => {
@@ -9,8 +10,8 @@ const Footer = () => {
         <div className="footer-column">
           <h4>NUESTRA EMPRESA</h4>
           <ul>
-            <li><a href="/#">Acerca de</a></li>
-            <li><a href="/#">Trazabilidad y Sostenibilidad</a></li>
+            <li><Link to="/acerca-de">Acerca de</Link></li>
+            <li><Link to="/trazabilidad-y-sostenibilidad">Trazabilidad y Sostenibilidad</Link></li>
           </ul>
         </div>
         
