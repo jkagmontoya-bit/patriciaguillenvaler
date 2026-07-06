@@ -11,7 +11,6 @@ const Footer = () => {
           <h4>NUESTRA EMPRESA</h4>
           <ul>
             <li><Link to="/acerca-de">Acerca de</Link></li>
-            <li><Link to="/trazabilidad-y-sostenibilidad">Trazabilidad y Sostenibilidad</Link></li>
           </ul>
         </div>
         
