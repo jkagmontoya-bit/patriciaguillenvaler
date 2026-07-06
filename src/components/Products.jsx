@@ -32,12 +32,12 @@ const Products = ({ isOpen, onClose }) => {
 
   return (
     <div className="public-modal-overlay">
-      <div className="public-modal-content" style={{maxWidth: '1000px', width: '90%', maxHeight: '90vh', overflowY: 'auto'}}>
-        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '30px'}}>
+      <div className="public-modal-content" style={{maxWidth: '1000px', width: '90%', maxHeight: '85vh', overflowY: 'auto', background: 'rgba(10, 8, 5, 0.85)', backdropFilter: 'blur(20px)', border: '1px solid rgba(211, 176, 109, 0.4)', borderRadius: '20px', padding: '40px'}}>
+        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '40px'}}>
           <div className="products-text">
-            <h3 className="text-gold" style={{letterSpacing: '3px', fontSize: '0.9rem', marginBottom: '10px'}}>PRODUCTOS</h3>
-            <h2 className="section-title font-serif" style={{fontSize: '2.5rem', marginBottom: '15px'}}>Productos Profesionales</h2>
-            <p style={{color: '#bbb', marginBottom: '15px'}}>
+            <h3 className="text-gold" style={{letterSpacing: '4px', fontSize: '1rem', marginBottom: '10px', fontWeight: 'bold'}}>NUESTROS PRODUCTOS</h3>
+            <h2 className="section-title font-serif" style={{fontSize: '2.8rem', marginBottom: '15px', color: '#fff'}}>Productos Profesionales</h2>
+            <p style={{color: '#ddd', marginBottom: '15px', fontSize: '1.1rem', lineHeight: '1.6'}}>
               Trabajamos con <strong>The Ordinary</strong>, marca reconocida internacionalmente por sus formulaciones científicamente respaldadas, efectivas y accesibles. 
             </p>
             <p style={{color: '#bbb'}}>
@@ -50,15 +50,17 @@ const Products = ({ isOpen, onClose }) => {
         <div className="store-grid" style={{
           display: 'grid', 
           gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', 
-          gap: '20px'
+          gap: '25px'
         }}>
           {products.map(product => (
             <div key={product.id} className="store-card" style={{
-              background: 'rgba(25, 20, 15, 0.4)', 
-              border: '1px solid rgba(211, 176, 109, 0.2)', 
-              borderRadius: '10px',
-              padding: '20px',
-              textAlign: 'center'
+              background: 'rgba(25, 20, 15, 0.6)', 
+              border: '1px solid rgba(211, 176, 109, 0.25)', 
+              borderRadius: '15px',
+              padding: '25px',
+              textAlign: 'center',
+              boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
+              transition: 'transform 0.3s ease, border-color 0.3s ease'
             }}>
               <img src={product.image || '/ordinary.jpg'} alt={product.name} style={{width: '100%', height: '180px', objectFit: 'cover', borderRadius: '8px', marginBottom: '15px'}} />
               <h4 className="font-serif" style={{fontSize: '1.2rem', marginBottom: '10px'}}>{product.name}</h4>
