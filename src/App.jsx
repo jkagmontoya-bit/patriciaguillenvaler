@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Header from './components/Header';
 import Hero from './components/Hero';
+import Products from './components/Products';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Login from './components/Auth/Login';
@@ -12,6 +13,7 @@ import Dashboard from './components/Dashboard';
 const Home = () => (
   <>
     <Hero />
+    <Products />
     <Contact />
   </>
 );
