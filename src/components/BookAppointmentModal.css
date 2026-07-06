@@ -17,6 +17,8 @@
   border-radius: 12px;
   width: 90%;
   max-width: 450px;
+  max-height: 90vh;
+  overflow-y: auto;
   border: 1px solid rgba(211, 176, 109, 0.3);
   color: #fff;
 }
