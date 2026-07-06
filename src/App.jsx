@@ -9,9 +9,11 @@ import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
 import Dashboard from './components/Dashboard';
 import ProductsPage from './pages/ProductsPage';
+import ProfileCard from './components/ProfileCard';
 
 const Home = () => (
   <>
+    <ProfileCard />
     <Hero />
     <Contact />
   </>
