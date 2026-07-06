@@ -1,5 +1,6 @@
 import React from 'react';
 import ProfileCard from './ProfileCard';
+import Services from './Services';
 import './Hero.css';
 
 const Hero = () => {
@@ -17,10 +18,9 @@ const Hero = () => {
           <a className="btn" href="https://wa.me/51962324552" target="_blank" rel="noopener noreferrer">Agenda tu cita</a>
           <a className="btn2" href="#estudio">Conoce nuestro estudio</a>
         </div>
-        
       </div>
       
-      <ProfileCard />
+      <Services />
     </section>
   );
 };
