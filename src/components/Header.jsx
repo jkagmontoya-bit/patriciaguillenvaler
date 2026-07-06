@@ -12,6 +12,7 @@ const Header = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedService, setSelectedService] = useState('');
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     const handleOpenBooking = (e) => {
