@@ -40,7 +40,7 @@ const Services = () => {
   };
 
   return (
-    <div className="hero-services-accordion">
+    <div className="hero-services-accordion" id="servicios">
       <h3 className="text-gold accordion-main-title">TRATAMIENTOS</h3>
       <h2 className="font-serif accordion-main-subtitle">Especializados</h2>
       
