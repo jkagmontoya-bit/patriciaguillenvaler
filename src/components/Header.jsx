@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import BookAppointmentModal from './BookAppointmentModal';
 import CartModal from './CartModal';
+import Products from './Products';
 import './Header.css';
 
 const Header = () => {
@@ -11,6 +12,7 @@ const Header = () => {
   const { totalItems } = useCart();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isProductsOpen, setIsProductsOpen] = useState(false);
   const [selectedService, setSelectedService] = useState('');
 
   useEffect(() => {
@@ -33,7 +35,7 @@ const Header = () => {
         <a href="/#inicio">Inicio</a>
         <a href="/#sobre-mi">Sobre mí</a>
         <a href="/#servicios">Servicios</a>
-        <a href="/#productos">Productos</a>
+        <a href="#" onClick={(e) => { e.preventDefault(); setIsProductsOpen(true); }}>Productos</a>
         <a href="/#estudio">Estudio</a>
         <a href="/#contacto">Contacto</a>
       </nav>
@@ -56,6 +58,7 @@ const Header = () => {
       
       <BookAppointmentModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} initialService={selectedService} />
       <CartModal isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      <Products isOpen={isProductsOpen} onClose={() => setIsProductsOpen(false)} />
     </header>
   );
 };
