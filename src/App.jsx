@@ -8,6 +8,7 @@ import Footer from './components/Footer';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
 import Dashboard from './components/Dashboard';
+import ProductsPage from './pages/ProductsPage';
 
 const Home = () => (
   <>
@@ -23,6 +24,7 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/productos" element={<ProductsPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/registro" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />
