@@ -46,6 +46,25 @@ const AdminLayout = ({ children, activeTab, setActiveTab }) => {
           >
             📊 Contabilidad
           </button>
+          <div style={{height: '1px', background: 'rgba(255,255,255,0.08)', margin: '10px 0'}}></div>
+          <button 
+            className={`nav-item ${activeTab === 'tratamientos' ? 'active' : ''}`}
+            onClick={() => setActiveTab('tratamientos')}
+          >
+            💆 Tratamientos
+          </button>
+          <button 
+            className={`nav-item ${activeTab === 'productos' ? 'active' : ''}`}
+            onClick={() => setActiveTab('productos')}
+          >
+            🛍️ Productos
+          </button>
+          <button 
+            className={`nav-item ${activeTab === 'disponibilidad' ? 'active' : ''}`}
+            onClick={() => setActiveTab('disponibilidad')}
+          >
+            📅 Disponibilidad
+          </button>
         </nav>
         
         <div className="sidebar-footer">

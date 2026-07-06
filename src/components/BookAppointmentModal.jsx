@@ -1,12 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../firebase/config';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs } from 'firebase/firestore';
 import './BookAppointmentModal.css';
 
 const BookAppointmentModal = ({ isOpen, onClose, initialService }) => {
   const [formData, setFormData] = useState({ client: '', service: initialService || '', date: '', time: '', status: 'Pendiente' });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [treatments, setTreatments] = useState([]);
+  const [availability, setAvailability] = useState([]);
+  const [availableTimes, setAvailableTimes] = useState([]);
+
+  // Fetch treatments and availability from Firestore
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const treatSnap = await getDocs(collection(db, "treatments"));
+        if (!treatSnap.empty) {
+          setTreatments(treatSnap.docs.map(d => ({ id: d.id, ...d.data() })));
+        }
+        const availSnap = await getDocs(collection(db, "availability"));
+        if (!availSnap.empty) {
+          setAvailability(availSnap.docs.map(d => ({ id: d.id, ...d.data() })));
+        }
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -14,7 +36,23 @@ const BookAppointmentModal = ({ isOpen, onClose, initialService }) => {
     }
   }, [isOpen, initialService]);
 
+  // When date changes, filter available time slots
+  useEffect(() => {
+    if (formData.date && availability.length > 0) {
+      const daySlots = availability.filter(s => s.date === formData.date);
+      setAvailableTimes(daySlots);
+      // Reset time when date changes
+      setFormData(prev => ({ ...prev, time: '' }));
+    } else {
+      setAvailableTimes([]);
+    }
+  }, [formData.date, availability]);
+
   if (!isOpen) return null;
+
+  // Get unique available dates
+  const today = new Date().toISOString().split('T')[0];
+  const availableDates = [...new Set(availability.filter(s => s.date >= today).map(s => s.date))].sort();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,6 +72,18 @@ const BookAppointmentModal = ({ isOpen, onClose, initialService }) => {
     setLoading(false);
   };
 
+  // Fallback treatment options if none in Firestore
+  const treatmentOptions = treatments.length > 0
+    ? treatments
+    : [
+        { name: 'Facial Esencial' },
+        { name: 'Facial Hidratante' },
+        { name: 'Facial Premium con Ácido Hialurónico' },
+        { name: 'Facial Premium con Exosomas' },
+        { name: 'Limpieza Facial Profunda' },
+        { name: 'Evaluación & Diagnóstico Personalizado' }
+      ];
+
   return (
     <div className="public-modal-overlay">
       <div className="public-modal-content">
@@ -50,18 +100,50 @@ const BookAppointmentModal = ({ isOpen, onClose, initialService }) => {
             </div>
             <form onSubmit={handleSubmit} className="public-modal-form">
               <input type="text" placeholder="Tu Nombre Completo" required value={formData.client} onChange={e => setFormData({...formData, client: e.target.value})} />
+              
               <select required value={formData.service} onChange={e => setFormData({...formData, service: e.target.value})}>
                 <option value="" disabled>Selecciona un Tratamiento</option>
-                <option value="Facial Esencial">Facial Esencial</option>
-                <option value="Facial Hidratante">Facial Hidratante</option>
-                <option value="Facial Premium con Ácido Hialurónico">Facial Premium con Ácido Hialurónico</option>
-                <option value="Facial Premium con Exosomas">Facial Premium con Exosomas</option>
-                <option value="Limpieza Facial Profunda">Limpieza Facial Profunda</option>
-                <option value="Evaluación & Diagnóstico Personalizado">Evaluación & Diagnóstico Personalizado</option>
-                <option value="Consulta Dermatológica">Consulta Dermatológica</option>
+                {treatmentOptions.map((t, i) => (
+                  <option key={i} value={t.name}>
+                    {t.name}{t.price ? ` — S/ ${t.price.toFixed(2)}` : ''}
+                  </option>
+                ))}
               </select>
-              <input type="date" required value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} />
-              <input type="time" required value={formData.time} onChange={e => setFormData({...formData, time: e.target.value})} />
+
+              {availability.length > 0 ? (
+                <>
+                  <select required value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})}>
+                    <option value="" disabled>Selecciona una Fecha Disponible</option>
+                    {availableDates.map(date => {
+                      const [y, m, d] = date.split('-');
+                      const dateObj = new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
+                      const days = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+                      return (
+                        <option key={date} value={date}>
+                          {days[dateObj.getDay()]} {d}/{m}/{y}
+                        </option>
+                      );
+                    })}
+                  </select>
+
+                  {formData.date && (
+                    <select required value={formData.time} onChange={e => setFormData({...formData, time: e.target.value})}>
+                      <option value="" disabled>Selecciona un Horario</option>
+                      {availableTimes.map(slot => (
+                        <option key={slot.id} value={slot.startTime}>
+                          {slot.startTime} — {slot.endTime}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                </>
+              ) : (
+                <>
+                  <input type="date" required value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} />
+                  <input type="time" required value={formData.time} onChange={e => setFormData({...formData, time: e.target.value})} />
+                </>
+              )}
+
               <div style={{display: 'flex', justifyContent: 'center', marginTop: '15px'}}>
                 <button type="submit" className="btn" disabled={loading}>
                   {loading ? 'Procesando...' : 'Confirmar Reserva'}

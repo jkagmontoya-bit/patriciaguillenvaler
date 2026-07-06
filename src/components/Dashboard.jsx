@@ -7,6 +7,9 @@ import InventoryTable from './Dashboard/InventoryTable';
 import SalesTable from './Dashboard/SalesTable';
 import PurchasesTable from './Dashboard/PurchasesTable';
 import AccountingReport from './Dashboard/AccountingReport';
+import TreatmentsManager from './Dashboard/TreatmentsManager';
+import ProductsManager from './Dashboard/ProductsManager';
+import AvailabilityManager from './Dashboard/AvailabilityManager';
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -25,6 +28,9 @@ const Dashboard = () => {
         {activeTab === 'ventas' && <SalesTable />}
         {activeTab === 'compras' && <PurchasesTable />}
         {activeTab === 'contabilidad' && <AccountingReport />}
+        {activeTab === 'tratamientos' && <TreatmentsManager />}
+        {activeTab === 'productos' && <ProductsManager />}
+        {activeTab === 'disponibilidad' && <AvailabilityManager />}
       </AdminLayout>
     );
   }
