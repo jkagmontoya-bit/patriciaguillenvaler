@@ -31,8 +31,8 @@ const Products = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="public-modal-overlay">
-      <div className="public-modal-content" style={{maxWidth: '1000px', width: '90%', maxHeight: '85vh', overflowY: 'auto', background: 'rgba(10, 8, 5, 0.85)', backdropFilter: 'blur(20px)', border: '1px solid rgba(211, 176, 109, 0.4)', borderRadius: '20px', padding: '40px'}}>
+    <div className="public-modal-overlay" onClick={onClose}>
+      <div className="public-modal-content" onClick={(e) => e.stopPropagation()} style={{maxWidth: '1000px', width: '90%', maxHeight: '85vh', overflowY: 'auto', background: 'rgba(10, 8, 5, 0.85)', backdropFilter: 'blur(20px)', border: '1px solid rgba(211, 176, 109, 0.4)', borderRadius: '20px', padding: '40px'}}>
         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '40px'}}>
           <div className="products-text">
             <h3 className="text-gold" style={{letterSpacing: '4px', fontSize: '1rem', marginBottom: '10px', fontWeight: 'bold'}}>NUESTROS PRODUCTOS</h3>
