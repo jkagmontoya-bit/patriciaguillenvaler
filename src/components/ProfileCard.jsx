@@ -12,7 +12,7 @@ const ProfileCard = () => {
         <button className="close-btn" onClick={() => setIsOpen(false)}>×</button>
         <img src="/patricia.jpg" alt="Patricia Guillén" className="card-img" />
         <div className="card-content">
-          <h3 className="font-serif">Hola,<br/>soy Patricia</h3>
+          <h3 className="font-serif">Hola,</h3>
           <p>Gracias por estar aquí. Estoy feliz de acompañarte en este camino hacia tu mejor versión.</p>
           <div className="firma font-serif">
             Con cariño,<br/>Patricia ♥
