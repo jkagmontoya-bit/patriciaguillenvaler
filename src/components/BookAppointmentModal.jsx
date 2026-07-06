@@ -62,9 +62,11 @@ const BookAppointmentModal = ({ isOpen, onClose, initialService }) => {
               </select>
               <input type="date" required value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} />
               <input type="time" required value={formData.time} onChange={e => setFormData({...formData, time: e.target.value})} />
-              <button type="submit" className="btn" disabled={loading} style={{marginTop: '15px', width: '100%'}}>
-                {loading ? 'Procesando...' : 'Confirmar Reserva'}
-              </button>
+              <div style={{display: 'flex', justifyContent: 'center', marginTop: '15px'}}>
+                <button type="submit" className="btn" disabled={loading}>
+                  {loading ? 'Procesando...' : 'Confirmar Reserva'}
+                </button>
+              </div>
             </form>
           </>
         )}
