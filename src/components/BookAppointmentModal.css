@@ -6,8 +6,8 @@
   height: 100%;
   background: rgba(0,0,0,0.85);
   display: flex;
-  padding: 20px;
-  overflow-y: auto;
+  justify-content: center;
+  align-items: center;
   z-index: 9999;
 }
 
@@ -15,9 +15,10 @@
   background: #110d0a;
   padding: 40px;
   border-radius: 12px;
-  width: 100%;
+  width: 90%;
   max-width: 450px;
-  margin: auto;
+  max-height: 85vh;
+  overflow-y: auto;
   border: 1px solid rgba(211, 176, 109, 0.3);
   color: #fff;
 }
