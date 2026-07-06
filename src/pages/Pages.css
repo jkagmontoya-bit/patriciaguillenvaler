@@ -1,6 +1,6 @@
 .generic-page {
-  padding: 150px 5% 100px;
-  max-width: 900px;
+  padding: 180px 8% 120px;
+  max-width: 1000px;
   margin: 0 auto;
   color: #ddd;
   min-height: 80vh;
@@ -10,43 +10,64 @@
 .generic-page h1 {
   color: #d3b06d;
   font-family: 'Playfair Display', serif;
-  font-size: 3rem;
-  margin-bottom: 50px;
+  font-size: 3.5rem;
+  margin-bottom: 60px;
   text-align: center;
+  letter-spacing: 1px;
 }
 
 .generic-page h2 {
   color: #fff;
   font-family: 'Playfair Display', serif;
-  font-size: 2rem;
-  margin-top: 50px;
-  margin-bottom: 25px;
+  font-size: 2.2rem;
+  margin-top: 70px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid rgba(211, 176, 109, 0.2);
+  padding-bottom: 10px;
 }
 
 .generic-page p {
-  font-size: 1.1rem;
-  line-height: 1.8;
-  margin-bottom: 25px;
+  font-size: 1.2rem;
+  line-height: 2;
+  margin-bottom: 30px;
   font-weight: 300;
+  color: #ccc;
+}
+
+.lead-text {
+  font-size: 1.35rem !important;
+  line-height: 1.9 !important;
+  color: #d3b06d !important;
+  text-align: center;
+  margin-bottom: 70px !important;
+  font-weight: 400 !important;
+  padding: 0 5%;
 }
 
 .grid-features {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 30px;
-  margin-top: 30px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 40px;
+  margin-top: 40px;
 }
 
 .grid-features > div {
-  background: rgba(15, 10, 5, 0.5);
-  padding: 25px;
-  border-radius: 8px;
-  border: 1px solid rgba(211, 176, 109, 0.1);
+  background: rgba(15, 10, 5, 0.4);
+  padding: 35px;
+  border-radius: 12px;
+  border: 1px solid rgba(211, 176, 109, 0.15);
+  transition: transform 0.3s ease;
+}
+
+.grid-features > div:hover {
+  transform: translateY(-5px);
+  border-color: rgba(211, 176, 109, 0.4);
 }
 
 .grid-features h4 {
-  font-size: 1.2rem;
-  margin-bottom: 10px;
+  font-size: 1.4rem;
+  margin-bottom: 15px;
+  font-family: 'Playfair Display', serif;
 }
 
 @media(max-width: 768px) {
