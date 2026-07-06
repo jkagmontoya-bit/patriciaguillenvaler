@@ -5,7 +5,7 @@ import { collection, getDocs } from 'firebase/firestore';
 import './Products.css';
 
 const Products = () => {
-  const [openIndex, setOpenIndex] = useState(null);
+  const [isExpanded, setIsExpanded] = useState(false);
   const { addToCart } = useCart();
   const [products, setProducts] = useState([
     // Fallback static products in case database is empty
@@ -29,51 +29,55 @@ const Products = () => {
     fetchProducts();
   }, []);
 
-  const toggleAccordion = (index) => {
-    if (openIndex === index) {
-      setOpenIndex(null);
-    } else {
-      setOpenIndex(index);
-    }
-  };
-
   return (
-    <div className="hero-services-accordion" id="productos">
-      <h3 className="text-gold accordion-main-title">PRODUCTOS</h3>
-      <h2 className="font-serif accordion-main-subtitle">Profesionales</h2>
-      
-      <div className="accordion-container">
-        {products.map((product, index) => (
-          <div 
-            key={product.id} 
-            className={`accordion-item ${openIndex === index ? 'active' : ''}`}
-            onClick={() => toggleAccordion(index)}
-          >
-            <div className="accordion-header">
-              <span className="accordion-title font-serif" style={{ fontSize: '0.95rem' }}>{product.name}</span>
-              <span className="accordion-icon">{openIndex === index ? '−' : '+'}</span>
-            </div>
-            
-            <div className={`accordion-content ${openIndex === index ? 'open' : ''}`} style={{ maxHeight: openIndex === index ? '150px' : '0' }}>
-              <div style={{ display: 'flex', gap: '15px', alignItems: 'center', marginTop: '10px', paddingBottom: '10px' }}>
-                <img src={product.image || '/ordinary.jpg'} alt={product.name} style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '8px' }} />
-                <div>
-                  <p className="text-gold" style={{ fontSize: '1.1rem', fontWeight: 'bold', margin: '0 0 8px 0' }}>S/ {product.price.toFixed(2)}</p>
-                  <button 
-                    className="btn" 
-                    style={{ padding: '6px 15px', fontSize: '0.8rem', width: 'auto' }} 
-                    onClick={(e) => { e.stopPropagation(); addToCart(product); }}
-                    disabled={product.stock <= 0}
-                  >
-                    {product.stock > 0 ? 'Añadir al carrito' : 'Agotado'}
-                  </button>
-                </div>
-              </div>
-            </div>
+    <section id="productos" className="products-section">
+      <div className="products-container" style={{marginBottom: '50px'}}>
+        <div className="products-text" style={{ cursor: 'pointer' }} onClick={() => setIsExpanded(!isExpanded)}>
+          <h3 className="text-gold">PRODUCTOS</h3>
+          <h2 className="section-title font-serif">
+            Productos Profesionales {isExpanded ? '▲' : '▼'}
+          </h2>
+          <p>
+            Trabajamos con <strong>The Ordinary</strong>, marca reconocida internacionalmente por sus formulaciones científicamente respaldadas, efectivas y accesibles. 
+          </p>
+          <p>
+            Cada producto disponible en el estudio ha sido escogido con criterio profesional, pensando en la calidad, la seguridad y los resultados reales que puedes esperar.
+          </p>
+        </div>
+        {isExpanded && (
+          <div className="products-image">
+            <img src="/ordinary.jpg" alt="Productos The Ordinary" />
           </div>
-        ))}
+        )}
       </div>
-    </div>
+
+      {isExpanded && (
+        <div className="store-grid" style={{
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
+          gap: '30px',
+          maxWidth: '1200px',
+          margin: '0 auto'
+        }}>
+          {products.map(product => (
+            <div key={product.id} className="store-card" style={{
+              background: '#110d0a', 
+              border: '1px solid rgba(211, 176, 109, 0.2)', 
+              borderRadius: '10px',
+              padding: '20px',
+              textAlign: 'center'
+            }}>
+              <img src={product.image || '/ordinary.jpg'} alt={product.name} style={{width: '100%', height: '200px', objectFit: 'cover', borderRadius: '8px', marginBottom: '15px'}} />
+              <h4 style={{fontSize: '1.1rem', marginBottom: '10px'}}>{product.name}</h4>
+              <p className="text-gold" style={{fontSize: '1.2rem', fontWeight: 'bold', marginBottom: '15px'}}>S/ {product.price.toFixed(2)}</p>
+              <button className="btn" style={{width: '100%'}} onClick={() => addToCart(product)} disabled={product.stock <= 0}>
+                {product.stock > 0 ? 'Añadir al carrito' : 'Agotado'}
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
   );
 };
 

@@ -54,10 +54,10 @@ const BookAppointmentModal = ({ isOpen, onClose, initialService }) => {
                 <option value="" disabled>Selecciona un Tratamiento</option>
                 <option value="Facial Esencial">Facial Esencial</option>
                 <option value="Facial Hidratante">Facial Hidratante</option>
-                <option value="Premium con Ácido Hialurónico">Premium con Ácido Hialurónico</option>
-                <option value="Premium con Exosomas">Premium con Exosomas</option>
+                <option value="Facial Premium con Ácido Hialurónico">Facial Premium con Ácido Hialurónico</option>
+                <option value="Facial Premium con Exosomas">Facial Premium con Exosomas</option>
                 <option value="Limpieza Facial Profunda">Limpieza Facial Profunda</option>
-                <option value="Evaluación & Diagnóstico">Evaluación & Diagnóstico</option>
+                <option value="Evaluación & Diagnóstico Personalizado">Evaluación & Diagnóstico Personalizado</option>
                 <option value="Consulta Dermatológica">Consulta Dermatológica</option>
               </select>
               <input type="date" required value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} />
