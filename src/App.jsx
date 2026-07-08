@@ -12,6 +12,7 @@ import ProductsPage from './pages/ProductsPage';
 import AboutPage from './pages/AboutPage';
 import SustainabilityPage from './pages/SustainabilityPage';
 import ProfileCard from './components/ProfileCard';
+import CheckoutPage from './pages/CheckoutPage';
 
 const Home = () => (
   <>
@@ -31,6 +32,7 @@ function App() {
           <Route path="/acerca-de" element={<AboutPage />} />
           <Route path="/trazabilidad-y-sostenibilidad" element={<SustainabilityPage />} />
           <Route path="/productos" element={<ProductsPage />} />
+          <Route path="/pedido" element={<CheckoutPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/registro" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />

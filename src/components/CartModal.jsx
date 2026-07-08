@@ -3,14 +3,17 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { db } from '../firebase/config';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom';
 
 const CartModal = ({ isOpen, onClose }) => {
   const { cart, updateQuantity, removeFromCart, cartTotal } = useCart();
+  const navigate = useNavigate();
   
   if (!isOpen) return null;
 
   const handleCheckout = () => {
-    window.location.href = "https://www.loubotanicals.pe/pedido";
+    onClose();
+    navigate('/pedido');
   };
 
   // Para el diseño solicitado, mostraremos el último producto añadido en detalle,
