@@ -4,13 +4,5 @@
       "source": "/(.*)",
       "destination": "/index.html"
     }
-  ],
-  "build": {
-    "env": {
-      "VITE_GOOGLE_MAPS_API_KEY": "AIzaSyCp6yY4PTt2Yu7Xyv0Ezo-mBz6bVGaXmyo"
-    }
-  },
-  "env": {
-    "VITE_GOOGLE_MAPS_API_KEY": "AIzaSyCp6yY4PTt2Yu7Xyv0Ezo-mBz6bVGaXmyo"
-  }
+  ]
 }
