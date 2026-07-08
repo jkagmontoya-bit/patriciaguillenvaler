@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../firebase/config';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { useJsApiLoader, Autocomplete } from '@react-google-maps/api';
 
 const CheckoutPage = () => {
   const { cart, cartTotal, clearCart, updateQuantity, removeFromCart } = useCart();
@@ -33,9 +34,30 @@ const CheckoutPage = () => {
     metodoPago: '' // tarjeta, yape, etc
   });
 
+  const [autocompleteRef, setAutocompleteRef] = useState(null);
+
+  // Cargamos el script de Google Maps usando la API Key de entorno
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '',
+    libraries: ['places']
+  });
+
   const handleChange = (e) => {
     const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
     setFormData({...formData, [e.target.name]: value});
+  };
+
+  const onLoad = (autocomplete) => {
+    setAutocompleteRef(autocomplete);
+  };
+
+  const onPlaceChanged = () => {
+    if (autocompleteRef !== null) {
+      const place = autocompleteRef.getPlace();
+      if (place && place.formatted_address) {
+        setFormData(prev => ({ ...prev, direccion: place.formatted_address }));
+      }
+    }
   };
 
   const handleNextStep = (step, e) => {
@@ -141,7 +163,29 @@ const CheckoutPage = () => {
                   </div>
                   <div style={formRowStyle}>
                     <label style={labelStyle}>Dirección</label>
-                    <input required type="text" name="direccion" value={formData.direccion} onChange={handleChange} style={inputStyle} />
+                    {isLoaded ? (
+                      <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged} style={{flex: 1}}>
+                        <input 
+                          required 
+                          type="text" 
+                          name="direccion" 
+                          value={formData.direccion} 
+                          onChange={handleChange} 
+                          placeholder="Ingresa tu dirección o búscalo en el mapa..." 
+                          style={{...inputStyle, width: '100%'}} 
+                        />
+                      </Autocomplete>
+                    ) : (
+                      <input 
+                        required 
+                        type="text" 
+                        name="direccion" 
+                        value={formData.direccion} 
+                        onChange={handleChange} 
+                        style={inputStyle} 
+                        placeholder="Cargando mapa..."
+                      />
+                    )}
                   </div>
                   <div style={formRowStyle}>
                     <label style={labelStyle}>Dirección Complementaria</label>
