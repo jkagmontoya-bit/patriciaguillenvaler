@@ -27,6 +27,7 @@ const CheckoutPage = () => {
   // Paso actual (1: Direcciones, 2: Envío, 3: Pago)
   const [currentStep, setCurrentStep] = useState(1);
   const [showTermsModal, setShowTermsModal] = useState(false);
+  const [showSummaryModal, setShowSummaryModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   // Form states
@@ -337,7 +338,7 @@ const CheckoutPage = () => {
             
             {currentStep === 3 && (
               <div style={stepBodyStyle}>
-                <form onSubmit={(e) => { e.preventDefault(); setShowPaymentModal(true); }}>
+                <form onSubmit={(e) => { e.preventDefault(); setShowSummaryModal(true); }}>
                   <div style={{display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px'}}>
                     <input required type="radio" name="pagoOpcion" value="tarjeta_yape" defaultChecked style={{accentColor: '#333'}} />
                     <span style={{fontSize: '0.95rem'}}>Paga con tarjeta de crédito/débito, Yape o Plin</span>
@@ -435,6 +436,47 @@ const CheckoutPage = () => {
             </div>
             <div style={{marginTop: '20px', textAlign: 'center'}}>
               <button onClick={() => setShowTermsModal(false)} style={{padding: '10px 20px', background: '#d3b06d', color: '#111', border: 'none', fontWeight: 'bold', cursor: 'pointer'}}>ACEPTAR</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Resumen de Datos */}
+      {showSummaryModal && (
+        <div style={modalOverlayStyle}>
+          <div style={{...modalContentStyle, background: '#fff', color: '#333', maxWidth: '500px'}}>
+            <button onClick={() => setShowSummaryModal(false)} style={{...modalCloseStyle, color: '#999'}}>&times;</button>
+            <h2 style={{fontSize: '1.4rem', marginBottom: '20px', fontFamily: '"Cormorant Garamond", serif', color: '#111'}}>¿Tus datos son correctos?</h2>
+            
+            <div style={{fontSize: '0.9rem', lineHeight: '1.6', marginBottom: '25px', background: '#f9f9f9', padding: '20px', border: '1px solid #eee'}}>
+              <p><strong>Nombre:</strong> {formData.nombre} {formData.apellidos}</p>
+              <p><strong>Celular:</strong> {formData.celular}</p>
+              <p><strong>DNI:</strong> {formData.dni}</p>
+              <p><strong>Dirección:</strong> {formData.direccion}</p>
+              <p><strong>Ubicación:</strong> {formData.distrito}, {formData.ciudad}, {formData.departamento}, {formData.pais}</p>
+              {formData.direccionComplementaria && <p><strong>Ref:</strong> {formData.direccionComplementaria}</p>}
+              <p style={{marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #ddd'}}>
+                <strong>Envío:</strong> {
+                  formData.metodoEnvio === 'recojo' ? 'Recojo en Estudio' :
+                  formData.metodoEnvio === 'delivery' ? 'Delivery' : 'Envío por Agencia'
+                }
+              </p>
+            </div>
+            
+            <div style={{display: 'flex', gap: '15px'}}>
+              <button onClick={() => {
+                setShowSummaryModal(false);
+                setCurrentStep(1); // Regresa a direcciones
+              }} style={{flex: 1, padding: '12px', background: '#eee', color: '#333', border: 'none', fontWeight: 'bold', cursor: 'pointer'}}>
+                EDITAR DATOS
+              </button>
+              
+              <button onClick={() => {
+                setShowSummaryModal(false);
+                setShowPaymentModal(true);
+              }} style={{flex: 1, padding: '12px', background: '#111', color: '#fff', border: 'none', fontWeight: 'bold', cursor: 'pointer'}}>
+                SÍ, CONTINUAR
+              </button>
             </div>
           </div>
         </div>
