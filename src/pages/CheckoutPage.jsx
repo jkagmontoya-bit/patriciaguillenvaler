@@ -274,7 +274,9 @@ const CheckoutPage = () => {
             {currentStep === 2 && (
               <div style={stepBodyStyle}>
                 <form onSubmit={(e) => handleNextStep(3, e)}>
-                  <div style={{display: 'flex', alignItems: 'flex-start', gap: '15px', paddingBottom: '20px', borderBottom: '1px solid #eee'}}>
+                  
+                  {/* Opción 1: Recojo */}
+                  <div style={{display: 'flex', alignItems: 'flex-start', gap: '15px', paddingBottom: '20px', borderBottom: '1px solid #eee', marginBottom: '15px'}}>
                     <input type="radio" name="metodoEnvio" value="recojo" checked={formData.metodoEnvio === 'recojo'} onChange={handleChange} style={{marginTop: '5px'}} />
                     <div style={{flex: 1, display: 'flex', justifyContent: 'space-between'}}>
                       <div>
@@ -285,9 +287,40 @@ const CheckoutPage = () => {
                           Válido para compras en la web con cualquier medio de pago. Puedes recoger tu pedido al día siguiente.
                         </p>
                       </div>
-                      <div style={{fontWeight: 'bold', color: '#555'}}>Sin costo</div>
+                      <div style={{fontWeight: 'bold', color: '#555'}}>Gratis</div>
                     </div>
                   </div>
+
+                  {/* Opción 2: Delivery */}
+                  <div style={{display: 'flex', alignItems: 'flex-start', gap: '15px', paddingBottom: '20px', borderBottom: '1px solid #eee', marginBottom: '15px'}}>
+                    <input type="radio" name="metodoEnvio" value="delivery" checked={formData.metodoEnvio === 'delivery'} onChange={handleChange} style={{marginTop: '5px'}} />
+                    <div style={{flex: 1, display: 'flex', justifyContent: 'space-between'}}>
+                      <div>
+                        <strong>Delivery</strong>
+                        <p style={{color: '#666', fontSize: '0.9rem', marginTop: '5px', lineHeight: '1.5'}}>
+                          Envío directo a tu domicilio en Lima Metropolitana y Callao.<br/>
+                          El costo de envío se coordinará internamente tras tu compra.
+                        </p>
+                      </div>
+                      <div style={{fontWeight: 'bold', color: '#555'}}>Por coordinar</div>
+                    </div>
+                  </div>
+
+                  {/* Opción 3: Envío por Agencia */}
+                  <div style={{display: 'flex', alignItems: 'flex-start', gap: '15px', paddingBottom: '20px', borderBottom: '1px solid #eee'}}>
+                    <input type="radio" name="metodoEnvio" value="agencia" checked={formData.metodoEnvio === 'agencia'} onChange={handleChange} style={{marginTop: '5px'}} />
+                    <div style={{flex: 1, display: 'flex', justifyContent: 'space-between'}}>
+                      <div>
+                        <strong>Envío por Agencia</strong>
+                        <p style={{color: '#666', fontSize: '0.9rem', marginTop: '5px', lineHeight: '1.5'}}>
+                          Para envíos a provincias de todo el Perú (Shalom, Olva Courier, etc.).<br/>
+                          Pago del flete en destino o según coordinación.
+                        </p>
+                      </div>
+                      <div style={{fontWeight: 'bold', color: '#555'}}>Pago en destino</div>
+                    </div>
+                  </div>
+
                   <div style={{marginTop: '25px', display: 'flex', justifyContent: 'flex-end'}}>
                     <button type="submit" style={btnDarkStyle}>CONTINUAR</button>
                   </div>
