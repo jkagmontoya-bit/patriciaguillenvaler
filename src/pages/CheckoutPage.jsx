@@ -196,7 +196,12 @@ const CheckoutPage = () => {
                     <label style={{...labelStyle, width: '100%', marginBottom: '5px', fontWeight: 'bold'}}>Dirección de Entrega</label>
                     {isLoaded ? (
                       <div style={{width: '100%'}}>
-                        <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged} style={{width: '100%'}}>
+                        <Autocomplete 
+                          onLoad={onLoad} 
+                          onPlaceChanged={onPlaceChanged} 
+                          style={{width: '100%'}}
+                          options={{ componentRestrictions: { country: 'pe' } }}
+                        >
                           <input 
                             required 
                             type="text" 
