@@ -6,7 +6,7 @@ import { db } from '../firebase/config';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 const CheckoutPage = () => {
-  const { cart, cartTotal, clearCart } = useCart();
+  const { cart, cartTotal, clearCart, updateQuantity, removeFromCart } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -140,17 +140,28 @@ const CheckoutPage = () => {
             
             <div style={{display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '30px'}}>
               {cart.map(item => (
-                <div key={item.id} style={{display: 'flex', gap: '15px'}}>
-                  <div style={{width: '60px', height: '60px', background: '#222', borderRadius: '4px', overflow: 'hidden'}}>
+                <div key={item.id} style={{display: 'flex', gap: '15px', alignItems: 'center', position: 'relative'}}>
+                  <div style={{width: '70px', height: '70px', background: '#222', borderRadius: '6px', overflow: 'hidden', flexShrink: 0}}>
                      {item.image ? <img src={item.image} alt={item.name} style={{width: '100%', height: '100%', objectFit: 'cover'}} /> : <div style={{width:'100%', height:'100%', display:'flex', alignItems:'center', justifyContent:'center'}}>🧴</div>}
                   </div>
                   <div style={{flex: 1}}>
-                    <h4 style={{fontSize: '0.9rem', textTransform: 'uppercase', marginBottom: '5px', color: '#eee'}}>{item.name}</h4>
-                    <p style={{color: '#aaa', fontSize: '0.85rem'}}>Cant: {item.quantity}</p>
+                    <h4 style={{fontSize: '0.9rem', textTransform: 'uppercase', marginBottom: '8px', color: '#eee', paddingRight: '20px'}}>{item.name}</h4>
+                    
+                    {/* Controles de cantidad */}
+                    <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                      <div style={{display: 'flex', alignItems: 'center', background: '#111', border: '1px solid #333', borderRadius: '4px'}}>
+                        <button type="button" onClick={() => updateQuantity(item.id, item.quantity - 1)} style={{background: 'none', border: 'none', color: '#fff', padding: '5px 10px', cursor: 'pointer'}}>-</button>
+                        <span style={{fontSize: '0.85rem', width: '20px', textAlign: 'center'}}>{item.quantity}</span>
+                        <button type="button" onClick={() => updateQuantity(item.id, item.quantity + 1)} style={{background: 'none', border: 'none', color: '#fff', padding: '5px 10px', cursor: 'pointer'}}>+</button>
+                      </div>
+                      <span style={{color: '#d3b06d', fontWeight: 'bold', fontSize: '0.9rem'}}>S/ {(item.price * item.quantity).toFixed(2)}</span>
+                    </div>
+
                   </div>
-                  <div style={{fontWeight: 'bold'}}>
-                    S/ {(item.price * item.quantity).toFixed(2)}
-                  </div>
+                  {/* Botón de eliminar (X) */}
+                  <button type="button" onClick={() => removeFromCart(item.id)} style={{position: 'absolute', top: 0, right: 0, background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: '1.2rem', lineHeight: 1}}>
+                    &times;
+                  </button>
                 </div>
               ))}
             </div>
