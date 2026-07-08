@@ -38,6 +38,7 @@ const CheckoutPage = () => {
     pais: 'Perú',
     departamento: '',
     ciudad: '',
+    distrito: '',
     direccion: '',
     direccionComplementaria: '',
     usarParaFactura: true,
@@ -191,6 +192,10 @@ const CheckoutPage = () => {
                   <div style={formRowStyle}>
                     <label style={labelStyle}>Ciudad</label>
                     <input required type="text" name="ciudad" value={formData.ciudad} onChange={handleChange} style={inputStyle} />
+                  </div>
+                  <div style={formRowStyle}>
+                    <label style={labelStyle}>Distrito</label>
+                    <input required type="text" name="distrito" value={formData.distrito} onChange={handleChange} style={inputStyle} />
                   </div>
                   <div style={{...formRowStyle, alignItems: 'flex-start', flexDirection: 'column', marginBottom: '20px'}}>
                     <label style={{...labelStyle, width: '100%', marginBottom: '5px', fontWeight: 'bold'}}>Dirección de Entrega</label>
