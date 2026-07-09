@@ -28,33 +28,31 @@ const PurchasesTable = () => {
     name: '', category: '', description: '', purchasePrice: '', salePrice: '', wholesalePrice: '', image: '', batch: '', expiryDate: ''
   });
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const purchSnap = await getDocs(collection(db, "purchases"));
-      const pItems = purchSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      pItems.sort((a, b) => new Date(b.date || b.createdAt) - new Date(a.date || a.createdAt));
-      setPurchases(pItems);
-    } catch (error) {
-      console.error("Error fetching purchases: ", error);
-    }
-    setLoading(false);
-  };
-
   useEffect(() => {
-    fetchData();
+    const unsubscribePurchases = onSnapshot(collection(db, "purchases"), (purchSnap) => {
+      const pItems = purchSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      pItems.sort((a, b) => new Date(b.date) - new Date(a.date));
+      setPurchases(pItems);
+      
+      const unsubscribeInventory = onSnapshot(collection(db, "inventory"), (invSnap) => {
+        const iItems = invSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setInventory(iItems);
+        setLoading(false);
+      }, (error) => {
+        console.error("Error fetching inventory: ", error);
+        setLoading(false);
+      });
+      
+      return () => unsubscribeInventory();
+    }, (error) => {
+      console.error("Error fetching purchases: ", error);
+      setLoading(false);
+    });
+
+    return () => unsubscribePurchases();
   }, []);
 
-  const fetchInventoryIfNeeded = async () => {
-    if (inventory.length === 0) {
-      try {
-        const invSnap = await getDocs(collection(db, "inventory"));
-        setInventory(invSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-      } catch (error) {
-        console.error("Error fetching inventory: ", error);
-      }
-    }
-  };
+
 
   const handleAddItem = (e) => {
     e.preventDefault();
@@ -154,7 +152,6 @@ const PurchasesTable = () => {
       setShowInvoiceModal(false);
       setInvoiceData({ ruc: '', supplier: '', invoiceNumber: '', date: '', total: '' });
       setInvoiceItems([]);
-      fetchData();
       alert("Factura registrada e inventario actualizado exitosamente.");
     } catch (error) {
       console.error("Error saving invoice: ", error);
@@ -164,7 +161,6 @@ const PurchasesTable = () => {
   };
 
   const openNewInvoice = () => {
-    fetchInventoryIfNeeded();
     setInvoiceData({ ruc: '', supplier: '', invoiceNumber: '', date: new Date().toISOString().split('T')[0], total: '' });
     setInvoiceItems([]);
     setShowInvoiceModal(true);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase/config';
-import { collection, getDocs, updateDoc, doc, deleteDoc } from 'firebase/firestore';
+import { collection, onSnapshot, updateDoc, doc, deleteDoc } from 'firebase/firestore';
 
 const CATEGORIES = ['Skincare', 'Limpieza', 'Tratamientos', 'Hidratación', 'Protector Solar', 'Packs'];
 
@@ -15,20 +15,17 @@ const ProductsManager = () => {
     name: '', description: '', category: '', price: '', wholesalePrice: '', stock: '', image: '', sku: '', batch: '', expiryDate: ''
   });
 
-  const fetchProducts = async () => {
-    setLoading(true);
-    try {
-      const querySnapshot = await getDocs(collection(db, "inventory"));
-      const items = querySnapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-      setProducts(items);
-    } catch (error) {
-      console.error("Error fetching products: ", error);
-    }
-    setLoading(false);
-  };
-
   useEffect(() => {
-    fetchProducts();
+    const unsubscribe = onSnapshot(collection(db, "inventory"), (querySnapshot) => {
+      const items = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setProducts(items);
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching products: ", error);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const openEdit = (item) => {

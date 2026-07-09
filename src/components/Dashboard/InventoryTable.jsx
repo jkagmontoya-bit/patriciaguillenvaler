@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase/config';
-import { collection, getDocs, addDoc, updateDoc, doc, deleteDoc } from 'firebase/firestore';
+import { collection, onSnapshot, addDoc, updateDoc, doc, deleteDoc } from 'firebase/firestore';
 
 const InventoryTable = () => {
   const [inventory, setInventory] = useState([]);
@@ -8,20 +8,20 @@ const InventoryTable = () => {
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({ name: '', price: '', stock: '' });
 
-  const fetchInventory = async () => {
-    setLoading(true);
-    try {
-      const querySnapshot = await getDocs(collection(db, "inventory"));
-      const items = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setInventory(items);
-    } catch (error) {
-      console.error("Error fetching inventory: ", error);
-    }
-    setLoading(false);
-  };
-
   useEffect(() => {
-    fetchInventory();
+    const unsubscribe = onSnapshot(collection(db, "inventory"), (querySnapshot) => {
+      const items = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setInventory(items);
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching inventory: ", error);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const handleSave = async (e) => {

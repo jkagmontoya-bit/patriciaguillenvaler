@@ -1,31 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase/config';
-import { collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 
 const SalesTable = () => {
   const [sales, setSales] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchSales = async () => {
-    setLoading(true);
-    try {
-      // Nota: orderBy requiere un índice en Firestore si la colección es grande.
-      const q = query(collection(db, "sales"), orderBy("date", "desc"));
-      const querySnapshot = await getDocs(q);
-      const items = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setSales(items);
-    } catch (error) {
-      console.error("Error fetching sales: ", error);
-      // Fallback por si falta el índice de date
-      const snapshot = await getDocs(collection(db, "sales"));
-      const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setSales(items);
-    }
-    setLoading(false);
-  };
-
   useEffect(() => {
-    fetchSales();
+    const q = query(collection(db, "sales"), orderBy("date", "desc"));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const items = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setSales(items);
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching sales: ", error);
+      // Fallback si falta indice
+      const unsubscribeFallback = onSnapshot(collection(db, "sales"), (snapshot) => {
+        const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setSales(items);
+        setLoading(false);
+      });
+      return () => unsubscribeFallback();
+    });
+
+    return () => unsubscribe();
   }, []);
 
   return (

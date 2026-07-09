@@ -17,17 +17,9 @@ const AvailabilityManager = () => {
   const daysOfWeek = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      // 1. Fetch Templates
-      const tempSnap = await getDocs(collection(db, "schedule_templates"));
+    const unsubscribeTemplates = onSnapshot(collection(db, "schedule_templates"), (tempSnap) => {
       let fetchedTemplates = tempSnap.docs.map(d => ({ id: d.id, ...d.data() }));
       
-      // Seed default template if empty
       if (fetchedTemplates.length === 0) {
         const defaultData = [
           { id: '0', dayOfWeek: 0, active: false, startTime: '09:00', endTime: '13:00' }, // Dom
@@ -43,21 +35,27 @@ const AvailabilityManager = () => {
         fetchedTemplates = defaultData;
       }
       
-      // Sort by dayOfWeek (0-6)
       fetchedTemplates.sort((a, b) => a.dayOfWeek - b.dayOfWeek);
       setTemplates(fetchedTemplates);
-
-      // 2. Fetch Blockouts
-      const blockSnap = await getDocs(collection(db, "schedule_blockouts"));
-      const fetchedBlockouts = blockSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-      fetchedBlockouts.sort((a, b) => a.date.localeCompare(b.date));
-      setBlockouts(fetchedBlockouts);
-
-    } catch (error) {
+      
+      const unsubscribeBlockouts = onSnapshot(collection(db, "schedule_blockouts"), (blockSnap) => {
+        const fetchedBlockouts = blockSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+        fetchedBlockouts.sort((a, b) => a.date.localeCompare(b.date));
+        setBlockouts(fetchedBlockouts);
+        setLoading(false);
+      }, (error) => {
+        console.error("Error fetching blockouts: ", error);
+        setLoading(false);
+      });
+      
+      return () => unsubscribeBlockouts();
+    }, (error) => {
       console.error("Error fetching schedules: ", error);
-    }
-    setLoading(false);
-  };
+      setLoading(false);
+    });
+
+    return () => unsubscribeTemplates();
+  }, []);
 
   const handleTemplateChange = (dayIndex, field, value) => {
     const updated = [...templates];
@@ -87,7 +85,6 @@ const AvailabilityManager = () => {
       });
       setBlockoutDate('');
       setBlockoutReason('');
-      fetchData();
     } catch (error) {
       console.error("Error saving blockout: ", error);
     }
@@ -97,7 +94,6 @@ const AvailabilityManager = () => {
     if (window.confirm('¿Eliminar este día bloqueado?')) {
       try {
         await deleteDoc(doc(db, "schedule_blockouts", id));
-        fetchData();
       } catch (error) {
         console.error("Error deleting blockout: ", error);
       }

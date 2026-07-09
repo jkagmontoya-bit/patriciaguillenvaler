@@ -1,33 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase/config';
-import { collection, getDocs, addDoc, updateDoc, doc, deleteDoc } from 'firebase/firestore';
+import { collection, onSnapshot, addDoc, updateDoc, doc, deleteDoc } from 'firebase/firestore';
+
+const CATEGORIES = ['Faciales', 'Cejas y Pestañas', 'Maquillaje'];
 
 const TreatmentsManager = () => {
   const [treatments, setTreatments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [formData, setFormData] = useState({ name: '', description: '', price: '' });
-
-  const fetchTreatments = async () => {
-    setLoading(true);
-    try {
-      const querySnapshot = await getDocs(collection(db, "treatments"));
-      const items = querySnapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-      setTreatments(items);
-    } catch (error) {
-      console.error("Error fetching treatments: ", error);
-    }
-    setLoading(false);
-  };
+  const [formData, setFormData] = useState({ name: '', description: '', price: '', category: CATEGORIES[0] });
 
   useEffect(() => {
-    fetchTreatments();
+    const unsubscribe = onSnapshot(collection(db, "treatments"), (querySnapshot) => {
+      const items = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      // Sort by category then name
+      items.sort((a, b) => {
+        const catA = a.category || '';
+        const catB = b.category || '';
+        if (catA === catB) return (a.name || '').localeCompare(b.name || '');
+        return catA.localeCompare(catB);
+      });
+      setTreatments(items);
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching treatments: ", error);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const openNew = () => {
     setEditingId(null);
-    setFormData({ name: '', description: '', price: '' });
+    setFormData({ name: '', description: '', price: '', category: CATEGORIES[0] });
     setShowModal(true);
   };
 

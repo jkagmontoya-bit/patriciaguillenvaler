@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase/config';
-import { collection, getDocs, addDoc, updateDoc, doc, deleteDoc } from 'firebase/firestore';
+import { collection, onSnapshot, addDoc, updateDoc, doc, deleteDoc } from 'firebase/firestore';
 import './AppointmentsTable.css';
 
 const AppointmentsTable = () => {
@@ -9,20 +9,22 @@ const AppointmentsTable = () => {
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({ client: '', service: '', date: '', time: '', status: 'Pendiente' });
 
-  const fetchAppointments = async () => {
-    setLoading(true);
-    try {
-      const querySnapshot = await getDocs(collection(db, "appointments"));
-      const appts = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setAppointments(appts);
-    } catch (error) {
-      console.error("Error fetching appointments: ", error);
-    }
-    setLoading(false);
-  };
-
   useEffect(() => {
-    fetchAppointments();
+    const unsubscribe = onSnapshot(collection(db, "appointments"), (querySnapshot) => {
+      const items = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      // Sort upcoming first
+      items.sort((a, b) => new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`));
+      setAppointments(items);
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching appointments: ", error);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const handleSave = async (e) => {

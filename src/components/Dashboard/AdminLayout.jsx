@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { db } from '../../firebase/config';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, onSnapshot } from 'firebase/firestore';
 import './AdminLayout.css';
 
 const AdminLayout = ({ children, activeTab, setActiveTab }) => {
@@ -10,42 +10,40 @@ const AdminLayout = ({ children, activeTab, setActiveTab }) => {
   const [alerts, setAlerts] = useState({ count: 0, critical: 0, text: '' });
 
   useEffect(() => {
-    const checkExpiry = async () => {
-      try {
-        const snap = await getDocs(collection(db, "inventory"));
-        let count = 0;
-        let critical = 0; // Vencidos
-        const today = new Date();
-        today.setHours(0,0,0,0);
-        
-        snap.forEach(doc => {
-          const data = doc.data();
-          if (data.expiryDate) {
-            const [y, m, d] = data.expiryDate.split('-');
-            const expDate = new Date(parseInt(y), parseInt(m)-1, parseInt(d));
-            const diffTime = expDate - today;
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            
-            if (diffDays < 0) {
-              critical++;
-            } else if (diffDays <= 90) { // 3 meses
-              count++;
-            }
+    const unsubscribe = onSnapshot(collection(db, "inventory"), (snap) => {
+      let count = 0;
+      let critical = 0;
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      
+      snap.forEach(doc => {
+        const data = doc.data();
+        if (data.expiryDate) {
+          const [y, m, d] = data.expiryDate.split('-');
+          const expDate = new Date(parseInt(y), parseInt(m)-1, parseInt(d));
+          const diffTime = expDate - today;
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          
+          if (diffDays < 0) {
+            critical++;
+          } else if (diffDays <= 90) {
+            count++;
           }
-        });
-
-        if (critical > 0) {
-          setAlerts({ count, critical, text: `¡ATENCIÓN! Tienes ${critical} producto(s) VENCIDO(S) en stock. Revisa el Inventario.` });
-        } else if (count > 0) {
-          setAlerts({ count, critical, text: `Aviso: Tienes ${count} producto(s) que vencerán en los próximos 3 meses.` });
-        } else {
-          setAlerts({ count: 0, critical: 0, text: '' });
         }
-      } catch (error) {
-        console.error("Error checking expiry: ", error);
+      });
+
+      if (critical > 0) {
+        setAlerts({ count, critical, text: `¡ATENCIÓN! Tienes ${critical} producto(s) VENCIDO(S) en stock. Revisa el Inventario.` });
+      } else if (count > 0) {
+        setAlerts({ count, critical, text: `Aviso: Tienes ${count} producto(s) que vencerán en los próximos 3 meses.` });
+      } else {
+        setAlerts({ count: 0, critical: 0, text: '' });
       }
-    };
-    checkExpiry();
+    }, (error) => {
+      console.error("Error with inventory snapshot: ", error);
+    });
+
+    return () => unsubscribe();
   }, []); // Run only once on mount
 
   return (

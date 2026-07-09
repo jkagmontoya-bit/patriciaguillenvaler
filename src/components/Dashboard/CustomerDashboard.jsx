@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { db } from '../../firebase/config';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
 
 const CustomerDashboard = () => {
   const { user, logout } = useAuth();
@@ -9,29 +9,29 @@ const CustomerDashboard = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      if (!user) return;
-      try {
-        const q = query(
-          collection(db, 'sales'),
-          where('userId', '==', user.uid)
-        );
-        const querySnapshot = await getDocs(q);
-        const ordersData = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
-        
-        // Ordenar localmente por fecha descendente
-        ordersData.sort((a, b) => b.date?.toDate() - a.date?.toDate());
-        setOrders(ordersData);
-      } catch (error) {
-        console.error("Error fetching orders:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchOrders();
+    if (!user) return;
+    setLoading(true);
+    const q = query(
+      collection(db, 'sales'),
+      where('userId', '==', user.uid)
+    );
+    
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const ordersData = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      
+      // Ordenar localmente por fecha descendente
+      ordersData.sort((a, b) => b.date?.toDate() - a.date?.toDate());
+      setOrders(ordersData);
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching orders:", error);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
   }, [user]);
 
   return (

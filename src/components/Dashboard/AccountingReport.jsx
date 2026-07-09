@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase/config';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { collection, onSnapshot } from 'firebase/firestore';
 
 const AccountingReport = () => {
   const [sales, setSales] = useState([]);
@@ -8,20 +8,24 @@ const AccountingReport = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const salesSnap = await getDocs(collection(db, "sales"));
-        setSales(salesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-        
-        const purchSnap = await getDocs(collection(db, "purchases"));
+    const unsubscribeSales = onSnapshot(collection(db, "sales"), (salesSnap) => {
+      setSales(salesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      
+      const unsubscribePurchases = onSnapshot(collection(db, "purchases"), (purchSnap) => {
         setPurchases(purchSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-      } catch (error) {
-        console.error("Error fetching accounting data: ", error);
-      }
+        setLoading(false);
+      }, (error) => {
+        console.error("Error fetching purchases for accounting: ", error);
+        setLoading(false);
+      });
+      
+      return () => unsubscribePurchases();
+    }, (error) => {
+      console.error("Error fetching sales for accounting: ", error);
       setLoading(false);
-    };
-    fetchData();
+    });
+
+    return () => unsubscribeSales();
   }, []);
 
   // Cálculos para el Régimen Especial (PDT 621)
