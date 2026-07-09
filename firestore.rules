@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Reglas para la colección de usuarios (users)
+    match /users/{userId} {
+      // Un usuario solo puede leer y escribir su propio documento
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Reglas para la colección de ventas (sales)
+    match /sales/{saleId} {
+      // Un usuario registrado puede leer sus propias compras
+      // Un invitado (sin auth) no puede leer compras a menos que seas admin
+      allow read: if request.auth != null && resource.data.userId == request.auth.uid;
+      
+      // Permitir crear ventas (ya sea autenticado o como invitado)
+      allow create: if true;
+      
+      // Solo el administrador puede modificar o borrar ventas, y puede leer todas
+      allow read, update, delete: if request.auth != null && request.auth.token.email == 'jkag.montoya@gmail.com';
+    }
+
+    // Reglas para la colección de citas (appointments)
+    match /appointments/{appointmentId} {
+      // Cualquiera puede crear una cita desde la web
+      allow create: if true;
+      
+      // Solo el admin puede ver, actualizar y borrar citas
+      allow read, update, delete: if request.auth != null && request.auth.token.email == 'jkag.montoya@gmail.com';
+    }
+  }
+}

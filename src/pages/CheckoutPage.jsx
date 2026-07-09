@@ -23,6 +23,7 @@ const CheckoutPage = () => {
   const { user, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [orderError, setOrderError] = useState('');
   
   // Paso actual (0: Identificación, 1: Direcciones, 2: Envío, 3: Pago)
   const [currentStep, setCurrentStep] = useState(user ? 1 : 0);
@@ -122,6 +123,7 @@ const CheckoutPage = () => {
     }
 
     setLoading(true);
+    setOrderError('');
     try {
       const sale = {
         userId: user?.uid || 'guest',
@@ -129,19 +131,21 @@ const CheckoutPage = () => {
         items: cart,
         total: cartTotal,
         date: serverTimestamp(),
-        status: 'Pendiente de Pago'
+        status: formData.metodoPago === 'tarjeta' ? 'Pagado' : 'Pendiente de Validación',
       };
       
-      await addDoc(collection(db, "sales"), sale);
+      const docRef = await addDoc(collection(db, 'sales'), sale);
+      console.log('Pedido guardado con ID: ', docRef.id);
+      
       clearCart();
       setShowPaymentModal(false);
-      alert("¡Pedido realizado con éxito! Nos contactaremos contigo para confirmar el pago.");
       navigate('/');
     } catch (error) {
-      console.error("Error al procesar el pedido:", error);
-      alert("Hubo un error procesando el pedido.");
+      console.error("Error al guardar el pedido:", error);
+      setOrderError('Hubo un error al procesar tu pedido. Por favor, revisa tu conexión o contáctanos a soporte.');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   if (cart.length === 0) {
@@ -569,19 +573,23 @@ const CheckoutPage = () => {
                   </div>
                 </div>
               </label>
-
             </div>
-
+            
+            {orderError && (
+              <div style={{ padding: '10px', marginTop: '15px', background: '#ffebee', color: '#c62828', border: '1px solid #ef9a9a', borderRadius: '4px', fontSize: '0.9rem' }}>
+                {orderError}
+              </div>
+            )}
+            
             <button onClick={handlePlaceOrder} disabled={loading} style={{
-              background: '#0d1117', color: '#fff', width: '100%', padding: '15px', marginTop: '25px', 
-              border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer'
+              width: '100%', marginTop: '25px', padding: '15px', background: '#111', color: '#fff', 
+              border: 'none', fontWeight: 'bold', fontSize: '1.1rem', cursor: loading ? 'not-allowed' : 'pointer'
             }}>
-              {loading ? 'PROCESANDO...' : 'Continuar'}
+              {loading ? 'Procesando...' : 'FINALIZAR COMPRA'}
             </button>
           </div>
         </div>
       )}
-
     </div>
   );
 };
