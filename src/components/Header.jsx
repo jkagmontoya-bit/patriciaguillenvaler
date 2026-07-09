@@ -49,9 +49,9 @@ const Header = () => {
         <div className="header-actions" style={{display: 'flex', alignItems: 'center'}}>
           {user ? (
             <>
-              <span className="user-greeting" style={{color: '#d3b06d', marginRight: '15px', fontWeight: 'bold'}}>
-                {user.email.split('@')[0]}
-              </span>
+              <Link to="/dashboard" className="user-greeting" style={{color: '#d3b06d', marginRight: '15px', fontWeight: 'bold', textDecoration: 'none'}}>
+                Mi Cuenta
+              </Link>
               <button className="btn2" onClick={logout} style={{cursor: 'pointer'}}>Salir</button>
             </>
           ) : (
