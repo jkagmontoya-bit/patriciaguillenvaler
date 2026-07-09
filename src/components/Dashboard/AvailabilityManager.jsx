@@ -39,9 +39,7 @@ const AvailabilityManager = () => {
           { id: '6', dayOfWeek: 6, active: true, startTime: '10:00', endTime: '14:00' }, // Sab
         ];
         
-        for (let t of defaultData) {
-          await setDoc(doc(db, "schedule_templates", t.id), t);
-        }
+        await Promise.all(defaultData.map(t => setDoc(doc(db, "schedule_templates", t.id), t)));
         fetchedTemplates = defaultData;
       }
       
@@ -70,9 +68,7 @@ const AvailabilityManager = () => {
   const saveTemplates = async () => {
     setLoading(true);
     try {
-      for (let t of templates) {
-        await setDoc(doc(db, "schedule_templates", t.id), t);
-      }
+      await Promise.all(templates.map(t => setDoc(doc(db, "schedule_templates", t.id), t)));
       alert("Plantilla semanal guardada con éxito.");
     } catch (error) {
       console.error("Error saving templates: ", error);
