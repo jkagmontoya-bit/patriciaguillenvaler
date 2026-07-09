@@ -30,7 +30,20 @@ const BookAppointmentModal = ({ isOpen, onClose, initialService }) => {
         ]);
         
         if (!treatSnap.empty) setTreatments(treatSnap.docs.map(d => ({ id: d.id, ...d.data() })));
-        if (!tempSnap.empty) setTemplates(tempSnap.docs.map(d => ({ id: d.id, ...d.data() })));
+        if (!tempSnap.empty) {
+          setTemplates(tempSnap.docs.map(d => ({ id: d.id, ...d.data() })));
+        } else {
+          // Fallback to prevent empty calendar if admin hasn't opened Availability settings yet
+          setTemplates([
+            { dayOfWeek: 0, active: false, startTime: '09:00', endTime: '13:00' },
+            { dayOfWeek: 1, active: true, startTime: '09:00', endTime: '18:00' },
+            { dayOfWeek: 2, active: true, startTime: '09:00', endTime: '18:00' },
+            { dayOfWeek: 3, active: true, startTime: '09:00', endTime: '18:00' },
+            { dayOfWeek: 4, active: true, startTime: '09:00', endTime: '18:00' },
+            { dayOfWeek: 5, active: true, startTime: '09:00', endTime: '18:00' },
+            { dayOfWeek: 6, active: true, startTime: '10:00', endTime: '14:00' }
+          ]);
+        }
         if (!blockSnap.empty) setBlockouts(blockSnap.docs.map(d => ({ id: d.id, ...d.data() })));
         if (!apptSnap.empty) setAppointments(apptSnap.docs.map(d => ({ id: d.id, ...d.data() })));
       } catch (error) {
