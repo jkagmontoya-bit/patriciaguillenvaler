@@ -39,7 +39,7 @@ const AvailabilityManager = () => {
           { id: '6', dayOfWeek: 6, active: true, startTime: '10:00', endTime: '14:00' }, // Sab
         ];
         
-        await Promise.all(defaultData.map(t => setDoc(doc(db, "schedule_templates", t.id), t)));
+        Promise.all(defaultData.map(t => setDoc(doc(db, "schedule_templates", t.id), t))).catch(e => console.error("Error seeding templates:", e));
         fetchedTemplates = defaultData;
       }
       
