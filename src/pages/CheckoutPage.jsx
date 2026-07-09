@@ -514,6 +514,11 @@ const CheckoutPage = () => {
               <p><strong>Dirección:</strong> <span style={{color: '#ccc'}}>{formData.direccion}</span></p>
               <p><strong>Ubicación:</strong> <span style={{color: '#ccc'}}>{formData.distrito}, {formData.ciudad}, {formData.departamento}, {formData.pais}</span></p>
               {formData.direccionComplementaria && <p><strong>Ref:</strong> <span style={{color: '#ccc'}}>{formData.direccionComplementaria}</span></p>}
+              <p style={{marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #444'}}>
+                <strong>Envío:</strong> <span style={{color: '#d3b06d'}}>{
+                  formData.metodoEnvio === 'recojo' ? 'Recojo en Estudio' :
+                  formData.metodoEnvio === 'delivery' ? 'Delivery' : 'Envío por Agencia'
+                }</span>
               </p>
             </div>
             
