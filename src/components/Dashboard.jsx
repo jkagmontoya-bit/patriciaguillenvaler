@@ -24,14 +24,14 @@ const Dashboard = () => {
   if (user.email === 'jkag.montoya@gmail.com') {
     return (
       <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-        {activeTab === 'citas' && <AppointmentsTable />}
-        {activeTab === 'inventario' && <InventoryTable />}
-        {activeTab === 'ventas' && <SalesTable />}
-        {activeTab === 'compras' && <PurchasesTable />}
-        {activeTab === 'contabilidad' && <AccountingReport />}
-        {activeTab === 'tratamientos' && <TreatmentsManager />}
-        {activeTab === 'productos' && <ProductsManager />}
-        {activeTab === 'disponibilidad' && <AvailabilityManager />}
+        <div style={{ display: activeTab === 'citas' ? 'block' : 'none' }}><AppointmentsTable /></div>
+        <div style={{ display: activeTab === 'inventario' ? 'block' : 'none' }}><InventoryTable /></div>
+        <div style={{ display: activeTab === 'ventas' ? 'block' : 'none' }}><SalesTable /></div>
+        <div style={{ display: activeTab === 'compras' ? 'block' : 'none' }}><PurchasesTable /></div>
+        <div style={{ display: activeTab === 'contabilidad' ? 'block' : 'none' }}><AccountingReport /></div>
+        <div style={{ display: activeTab === 'tratamientos' ? 'block' : 'none' }}><TreatmentsManager /></div>
+        <div style={{ display: activeTab === 'productos' ? 'block' : 'none' }}><ProductsManager /></div>
+        <div style={{ display: activeTab === 'disponibilidad' ? 'block' : 'none' }}><AvailabilityManager /></div>
       </AdminLayout>
     );
   }
