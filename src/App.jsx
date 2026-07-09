@@ -1,5 +1,5 @@
-import React from 'react'; // Cache bust Vercel
-import { Routes, Route } from 'react-router-dom';
+import React from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Header from './components/Header';
 import Hero from './components/Hero';
@@ -22,11 +22,14 @@ const Home = () => (
   </>
 );
 
-function App() {
+function AppContent() {
+  const location = useLocation();
+  const isDashboard = location.pathname.startsWith('/dashboard');
+
   return (
-    <AuthProvider>
-      <Header />
-      <main>
+    <>
+      {!isDashboard && <Header />}
+      <main style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/acerca-de" element={<AboutPage />} />
@@ -35,10 +38,18 @@ function App() {
           <Route path="/pedido" element={<CheckoutPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/registro" element={<Register />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard/*" element={<Dashboard />} />
         </Routes>
       </main>
-      <Footer />
+      {!isDashboard && <Footer />}
+    </>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
     </AuthProvider>
   );
 }
