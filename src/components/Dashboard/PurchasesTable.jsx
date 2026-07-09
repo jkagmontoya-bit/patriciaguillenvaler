@@ -31,19 +31,12 @@ const PurchasesTable = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [purchSnap, invSnap] = await Promise.all([
-        getDocs(collection(db, "purchases")),
-        getDocs(collection(db, "inventory"))
-      ]);
-      
+      const purchSnap = await getDocs(collection(db, "purchases"));
       const pItems = purchSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      // Sort by latest first (assuming they have createdAt or date strings, let's sort by date string temporarily)
       pItems.sort((a, b) => new Date(b.date || b.createdAt) - new Date(a.date || a.createdAt));
       setPurchases(pItems);
-      
-      setInventory(invSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     } catch (error) {
-      console.error("Error fetching data: ", error);
+      console.error("Error fetching purchases: ", error);
     }
     setLoading(false);
   };
@@ -51,6 +44,17 @@ const PurchasesTable = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const fetchInventoryIfNeeded = async () => {
+    if (inventory.length === 0) {
+      try {
+        const invSnap = await getDocs(collection(db, "inventory"));
+        setInventory(invSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      } catch (error) {
+        console.error("Error fetching inventory: ", error);
+      }
+    }
+  };
 
   const handleAddItem = (e) => {
     e.preventDefault();
@@ -160,6 +164,7 @@ const PurchasesTable = () => {
   };
 
   const openNewInvoice = () => {
+    fetchInventoryIfNeeded();
     setInvoiceData({ ruc: '', supplier: '', invoiceNumber: '', date: new Date().toISOString().split('T')[0], total: '' });
     setInvoiceItems([]);
     setShowInvoiceModal(true);

@@ -46,7 +46,7 @@ const AdminLayout = ({ children, activeTab, setActiveTab }) => {
       }
     };
     checkExpiry();
-  }, [activeTab]); // Re-check when changing tabs
+  }, []); // Run only once on mount
 
   return (
     <div className="admin-layout">
