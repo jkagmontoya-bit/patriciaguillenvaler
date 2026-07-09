@@ -503,22 +503,17 @@ const CheckoutPage = () => {
       {/* Modal de Resumen de Datos */}
       {showSummaryModal && (
         <div style={modalOverlayStyle}>
-          <div style={{...modalContentStyle, background: '#fff', color: '#333', maxWidth: '500px'}}>
+          <div style={{...modalContentStyle, background: '#1a1a1a', color: '#fff', maxWidth: '500px', border: '1px solid #333'}}>
             <button onClick={() => setShowSummaryModal(false)} style={{...modalCloseStyle, color: '#999'}}>&times;</button>
-            <h2 style={{fontSize: '1.4rem', marginBottom: '20px', fontFamily: '"Cormorant Garamond", serif', color: '#111'}}>¿Tus datos son correctos?</h2>
+            <h2 style={{fontSize: '1.4rem', marginBottom: '20px', fontFamily: '"Cormorant Garamond", serif', color: '#d3b06d'}}>¿Tus datos son correctos?</h2>
             
-            <div style={{fontSize: '0.9rem', lineHeight: '1.6', marginBottom: '25px', background: '#f9f9f9', padding: '20px', border: '1px solid #eee'}}>
-              <p><strong>Nombre:</strong> {formData.nombre} {formData.apellidos}</p>
-              <p><strong>Celular:</strong> {formData.celular}</p>
-              <p><strong>DNI:</strong> {formData.dni}</p>
-              <p><strong>Dirección:</strong> {formData.direccion}</p>
-              <p><strong>Ubicación:</strong> {formData.distrito}, {formData.ciudad}, {formData.departamento}, {formData.pais}</p>
-              {formData.direccionComplementaria && <p><strong>Ref:</strong> {formData.direccionComplementaria}</p>}
-              <p style={{marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #ddd'}}>
-                <strong>Envío:</strong> {
-                  formData.metodoEnvio === 'recojo' ? 'Recojo en Estudio' :
-                  formData.metodoEnvio === 'delivery' ? 'Delivery' : 'Envío por Agencia'
-                }
+            <div style={{fontSize: '0.9rem', lineHeight: '1.6', marginBottom: '25px', background: '#222', padding: '20px', border: '1px solid #333', borderRadius: '4px'}}>
+              <p><strong>Nombre:</strong> <span style={{color: '#ccc'}}>{formData.nombre} {formData.apellidos}</span></p>
+              <p><strong>Celular:</strong> <span style={{color: '#ccc'}}>{formData.celular}</span></p>
+              <p><strong>DNI:</strong> <span style={{color: '#ccc'}}>{formData.dni}</span></p>
+              <p><strong>Dirección:</strong> <span style={{color: '#ccc'}}>{formData.direccion}</span></p>
+              <p><strong>Ubicación:</strong> <span style={{color: '#ccc'}}>{formData.distrito}, {formData.ciudad}, {formData.departamento}, {formData.pais}</span></p>
+              {formData.direccionComplementaria && <p><strong>Ref:</strong> <span style={{color: '#ccc'}}>{formData.direccionComplementaria}</span></p>}
               </p>
             </div>
             
@@ -526,14 +521,14 @@ const CheckoutPage = () => {
               <button onClick={() => {
                 setShowSummaryModal(false);
                 setCurrentStep(1); // Regresa a direcciones
-              }} style={{flex: 1, padding: '12px', background: '#eee', color: '#333', border: 'none', fontWeight: 'bold', cursor: 'pointer'}}>
+              }} style={{flex: 1, padding: '12px', background: '#333', color: '#fff', border: '1px solid #555', fontWeight: 'bold', cursor: 'pointer', borderRadius: '4px'}}>
                 EDITAR DATOS
               </button>
               
               <button onClick={() => {
                 setShowSummaryModal(false);
                 setShowPaymentModal(true);
-              }} style={{flex: 1, padding: '12px', background: '#111', color: '#fff', border: 'none', fontWeight: 'bold', cursor: 'pointer'}}>
+              }} style={{flex: 1, padding: '12px', background: '#c7a450', color: '#111', border: 'none', fontWeight: 'bold', cursor: 'pointer', borderRadius: '4px'}}>
                 SÍ, CONTINUAR
               </button>
             </div>
@@ -544,29 +539,29 @@ const CheckoutPage = () => {
       {/* Modal de Pago (Fake Payment Gateway) */}
       {showPaymentModal && (
         <div style={modalOverlayStyle}>
-          <div style={{...modalContentStyle, background: '#eee', color: '#333', maxWidth: '400px', textAlign: 'center'}}>
-            <button onClick={() => setShowPaymentModal(false)} style={{...modalCloseStyle, color: '#666'}}>&times;</button>
-            <h3 style={{fontSize: '1.1rem', marginBottom: '25px', color: '#555'}}>Elige un medio de pago</h3>
+          <div style={{...modalContentStyle, background: '#1a1a1a', color: '#fff', maxWidth: '400px', textAlign: 'center', border: '1px solid #333'}}>
+            <button onClick={() => setShowPaymentModal(false)} style={{...modalCloseStyle, color: '#999'}}>&times;</button>
+            <h3 style={{fontSize: '1.2rem', marginBottom: '25px', color: '#d3b06d', fontFamily: '"Cormorant Garamond", serif'}}>Elige un medio de pago</h3>
             
             <div style={{display: 'flex', flexDirection: 'column', gap: '15px', textAlign: 'left'}}>
               
-              <label style={paymentOptionStyle}>
-                <input type="radio" name="gateway" value="tarjeta" defaultChecked style={{accentColor: '#111'}} />
-                <div>
-                  <div style={{fontWeight: 'bold', fontSize: '0.9rem', marginBottom: '5px'}}>Tarjeta de crédito y/o débito</div>
-                  <div style={{fontSize: '0.8rem', color: '#666', marginBottom: '10px'}}>Realiza tu pago en cuotas o directo</div>
+              <label style={{...paymentOptionStyle, background: '#222', borderColor: formData.metodoPago === 'tarjeta' ? '#d3b06d' : '#333'}}>
+                <input type="radio" name="metodoPago" value="tarjeta" onChange={handleChange} checked={formData.metodoPago === 'tarjeta'} style={{accentColor: '#d3b06d'}} />
+                <div style={{flex: 1}}>
+                  <div style={{fontWeight: 'bold', fontSize: '0.9rem', marginBottom: '5px', color: '#fff'}}>Tarjeta de crédito y/o débito</div>
+                  <div style={{fontSize: '0.8rem', color: '#aaa', marginBottom: '10px'}}>Realiza tu pago en cuotas o directo</div>
                   <div style={{display: 'flex', gap: '5px'}}>
-                    <span style={payBadge}>VISA</span>
-                    <span style={payBadge}>MC</span>
-                    <span style={payBadge}>AMEX</span>
+                    <span style={{...payBadge, background: '#444', color: '#fff'}}>VISA</span>
+                    <span style={{...payBadge, background: '#444', color: '#fff'}}>MC</span>
+                    <span style={{...payBadge, background: '#444', color: '#fff'}}>AMEX</span>
                   </div>
                 </div>
               </label>
 
-              <label style={paymentOptionStyle}>
-                <input type="radio" name="gateway" value="qr" style={{accentColor: '#111'}} />
-                <div>
-                  <div style={{fontWeight: 'bold', fontSize: '0.9rem', marginBottom: '5px'}}>Código QR Usando tu billetera</div>
+              <label style={{...paymentOptionStyle, background: '#222', borderColor: formData.metodoPago === 'qr' ? '#d3b06d' : '#333'}}>
+                <input type="radio" name="metodoPago" value="qr" onChange={handleChange} checked={formData.metodoPago === 'qr'} style={{accentColor: '#d3b06d'}} />
+                <div style={{flex: 1}}>
+                  <div style={{fontWeight: 'bold', fontSize: '0.9rem', marginBottom: '5px', color: '#fff'}}>Código QR Usando tu billetera</div>
                   <div style={{display: 'flex', gap: '5px'}}>
                     <span style={{...payBadge, background: '#742384', color: '#fff'}}>Yape</span>
                     <span style={{...payBadge, background: '#00d7d2', color: '#fff'}}>Plin</span>
@@ -581,11 +576,31 @@ const CheckoutPage = () => {
               </div>
             )}
             
+            <style>
+              {`
+                @keyframes spin { 100% { transform: rotate(360deg); } }
+                .btn-spinner {
+                  border: 2px solid rgba(255,255,255,0.3);
+                  border-top-color: #fff;
+                  border-radius: 50%;
+                  width: 16px;
+                  height: 16px;
+                  animation: spin 1s linear infinite;
+                  display: inline-block;
+                }
+              `}
+            </style>
+            
             <button onClick={handlePlaceOrder} disabled={loading} style={{
-              width: '100%', marginTop: '25px', padding: '15px', background: '#111', color: '#fff', 
-              border: 'none', fontWeight: 'bold', fontSize: '1.1rem', cursor: loading ? 'not-allowed' : 'pointer'
+              width: '100%', marginTop: '25px', padding: '15px', background: '#c7a450', color: '#111', 
+              border: 'none', borderRadius: '4px', fontWeight: 'bold', fontSize: '1.1rem', 
+              cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px'
             }}>
-              {loading ? 'Procesando...' : 'FINALIZAR COMPRA'}
+              {loading ? (
+                <>
+                  <span className="btn-spinner"></span> Procesando...
+                </>
+              ) : 'FINALIZAR COMPRA'}
             </button>
           </div>
         </div>
