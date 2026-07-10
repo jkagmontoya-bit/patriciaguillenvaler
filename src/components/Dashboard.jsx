@@ -16,14 +16,18 @@ const Dashboard = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('citas');
 
+  const [isAdminView, setIsAdminView] = useState(true);
+
   if (!user) {
     return <Navigate to="/login" />;
   }
 
-  // Verificar si es administrador
-  if (user.email === 'jkag.montoya@gmail.com') {
+  const isMasterUser = user.email === 'jkag.montoya@gmail.com';
+
+  // Si es administrador maestro y está en vista administrador
+  if (isMasterUser && isAdminView) {
     return (
-      <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+      <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab} onToggleView={() => setIsAdminView(false)}>
         <div style={{ display: activeTab === 'citas' ? 'block' : 'none' }}><AppointmentsTable /></div>
         <div style={{ display: activeTab === 'inventario' ? 'block' : 'none' }}><InventoryTable /></div>
         <div style={{ display: activeTab === 'ventas' ? 'block' : 'none' }}><SalesTable /></div>
@@ -36,8 +40,8 @@ const Dashboard = () => {
     );
   }
 
-  // Si no es administrador, mostrar pantalla de clientes
-  return <CustomerDashboard />;
+  // Si es maestro en vista cliente, o cualquier otro cliente
+  return <CustomerDashboard isMasterUser={isMasterUser} onToggleView={() => setIsAdminView(true)} />;
 };
 
 export default Dashboard;

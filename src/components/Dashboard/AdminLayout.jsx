@@ -5,7 +5,7 @@ import { db } from '../../firebase/config';
 import { collection, onSnapshot } from 'firebase/firestore';
 import './AdminLayout.css';
 
-const AdminLayout = ({ children, activeTab, setActiveTab }) => {
+const AdminLayout = ({ children, activeTab, setActiveTab, onToggleView }) => {
   const { logout, user } = useAuth();
   const [alerts, setAlerts] = useState({ count: 0, critical: 0, text: '' });
 
@@ -68,6 +68,9 @@ const AdminLayout = ({ children, activeTab, setActiveTab }) => {
         </nav>
         
         <div className="sidebar-footer">
+          {onToggleView && (
+            <button onClick={onToggleView} className="btn-outline" style={{width: '100%', marginBottom: '10px', textAlign: 'center', borderColor: '#d3b06d', color: '#d3b06d'}}>👁️ Ver como Cliente</button>
+          )}
           <Link to="/" className="btn-outline" style={{width: '100%', marginBottom: '10px', textAlign: 'center'}}>Ir a Web</Link>
           <button onClick={logout} className="btn2" style={{width: '100%'}}>Salir</button>
         </div>

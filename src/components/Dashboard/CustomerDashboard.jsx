@@ -3,7 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import { db } from '../../firebase/config';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
 
-const CustomerDashboard = () => {
+const CustomerDashboard = ({ isMasterUser, onToggleView }) => {
   const { user, logout } = useAuth();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -43,12 +43,22 @@ const CustomerDashboard = () => {
             <h1 style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '2.5rem', color: '#111', margin: 0 }}>Mi Cuenta</h1>
             <p style={{ color: '#666', marginTop: '5px' }}>Hola, {user?.displayName || user?.email || 'Usuario'}</p>
           </div>
-          <button 
-            onClick={logout}
-            style={{ padding: '10px 20px', background: '#333', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.9rem' }}
-          >
-            Cerrar Sesión
-          </button>
+          <div style={{ display: 'flex', gap: '15px' }}>
+            {isMasterUser && onToggleView && (
+              <button 
+                onClick={onToggleView}
+                style={{ padding: '10px 20px', background: '#d3b06d', color: '#111', border: 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.9rem' }}
+              >
+                Volver a Admin
+              </button>
+            )}
+            <button 
+              onClick={logout}
+              style={{ padding: '10px 20px', background: '#333', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.9rem' }}
+            >
+              Cerrar Sesión
+            </button>
+          </div>
         </div>
 
         <div style={{ background: '#fff', border: '1px solid #ddd', padding: '30px' }}>
