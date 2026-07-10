@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../firebase/config';
-import { collection, addDoc, getDocs } from 'firebase/firestore';
+import { collection, addDoc, getDocs, doc, getDoc } from 'firebase/firestore';
+import { useAuth } from '../context/AuthContext';
 import './BookAppointmentModal.css';
 
 const BookAppointmentModal = ({ isOpen, onClose, initialService }) => {
+  const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState(0); // 0: Form, 1: Payment
   const [formData, setFormData] = useState({ client: '', service: initialService || '', date: '', time: '', metodoPago: 'tarjeta' });
   const [loading, setLoading] = useState(false);
@@ -54,12 +56,30 @@ const BookAppointmentModal = ({ isOpen, onClose, initialService }) => {
   }, [isOpen]); // Refetch when modal opens to get fresh appointments
 
   useEffect(() => {
+    const fetchUserName = async () => {
+      let clientName = '';
+      if (user) {
+        clientName = user.displayName || user.email; // Fallback
+        try {
+          const userDoc = await getDoc(doc(db, "users", user.uid));
+          if (userDoc.exists() && userDoc.data().name) {
+            clientName = userDoc.data().name;
+          }
+        } catch (error) {
+          console.error("Error fetching user profile:", error);
+        }
+      }
+      return clientName;
+    };
+
     if (isOpen) {
-      setFormData(prev => ({ ...prev, service: initialService || '', date: '', time: '', client: '' }));
+      fetchUserName().then(clientName => {
+        setFormData(prev => ({ ...prev, service: initialService || '', date: '', time: '', client: clientName }));
+      });
       setCurrentStep(0);
       setSuccess(false);
     }
-  }, [isOpen, initialService]);
+  }, [isOpen, initialService, user]);
 
   // Calculate available time slots when date changes
   useEffect(() => {
