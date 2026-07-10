@@ -106,9 +106,9 @@ const AppointmentsTable = () => {
                     <td>{appt.time}</td>
                     <td>
                       <select 
-                        value={appt.status} 
+                        value={appt.status || 'Pendiente'} 
                         onChange={(e) => updateStatus(appt.id, e.target.value)}
-                        className={`status-select ${appt.status.toLowerCase()}`}
+                        className={`status-select ${(appt.status || 'Pendiente').toLowerCase()}`}
                       >
                         <option value="Pendiente">Pendiente</option>
                         <option value="Confirmada">Confirmada</option>

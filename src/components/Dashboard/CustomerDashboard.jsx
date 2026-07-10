@@ -23,7 +23,11 @@ const CustomerDashboard = ({ isMasterUser, onToggleView }) => {
       }));
       
       // Ordenar localmente por fecha descendente
-      ordersData.sort((a, b) => b.date?.toDate() - a.date?.toDate());
+      ordersData.sort((a, b) => {
+        const dateA = a.date?.toDate ? a.date.toDate() : new Date(a.date || 0);
+        const dateB = b.date?.toDate ? b.date.toDate() : new Date(b.date || 0);
+        return dateB - dateA;
+      });
       setOrders(ordersData);
       setLoading(false);
     }, (error) => {
@@ -91,8 +95,12 @@ const CustomerDashboard = ({ isMasterUser, onToggleView }) => {
                   {orders.map(order => (
                     <tr key={order.id} style={{ borderBottom: '1px solid #eee' }}>
                       <td style={{ padding: '15px', fontWeight: 'bold' }}>#{order.id.slice(0,6).toUpperCase()}</td>
-                      <td style={{ padding: '15px' }}>{order.date ? order.date.toDate().toLocaleDateString('es-PE') : 'N/A'}</td>
-                      <td style={{ padding: '15px' }}>S/ {order.total?.toFixed(2)}</td>
+                      <td style={{ padding: '15px' }}>
+                        {order.date 
+                          ? (order.date.toDate ? order.date.toDate().toLocaleDateString('es-PE') : new Date(order.date).toLocaleDateString('es-PE')) 
+                          : 'N/A'}
+                      </td>
+                      <td style={{ padding: '15px' }}>S/ {Number(order.total || 0).toFixed(2)}</td>
                       <td style={{ padding: '15px', textTransform: 'capitalize' }}>{order.customerInfo?.metodoEnvio || 'N/A'}</td>
                       <td style={{ padding: '15px' }}>
                         <span style={{ 
