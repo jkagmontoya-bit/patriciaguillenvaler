@@ -37,28 +37,29 @@ const AvailabilityManager = () => {
       
       fetchedTemplates.sort((a, b) => a.dayOfWeek - b.dayOfWeek);
       setTemplates(fetchedTemplates);
-      
-      const unsubscribeBlockouts = onSnapshot(collection(db, "schedule_blockouts"), (blockSnap) => {
-        const fetchedBlockouts = blockSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-        fetchedBlockouts.sort((a, b) => {
-          const dateA = typeof a.date === 'string' ? a.date : '';
-          const dateB = typeof b.date === 'string' ? b.date : '';
-          return dateA.localeCompare(dateB);
-        });
-        setBlockouts(fetchedBlockouts);
-        setLoading(false);
-      }, (error) => {
-        console.error("Error fetching blockouts: ", error);
-        setLoading(false);
-      });
-      
-      return () => unsubscribeBlockouts();
     }, (error) => {
       console.error("Error fetching schedules: ", error);
       setLoading(false);
     });
 
-    return () => unsubscribeTemplates();
+    const unsubscribeBlockouts = onSnapshot(collection(db, "schedule_blockouts"), (blockSnap) => {
+      const fetchedBlockouts = blockSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+      fetchedBlockouts.sort((a, b) => {
+        const dateA = typeof a.date === 'string' ? a.date : '';
+        const dateB = typeof b.date === 'string' ? b.date : '';
+        return dateA.localeCompare(dateB);
+      });
+      setBlockouts(fetchedBlockouts);
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching blockouts: ", error);
+      setLoading(false);
+    });
+
+    return () => {
+      unsubscribeTemplates();
+      unsubscribeBlockouts();
+    };
   }, []);
 
   const handleTemplateChange = (dayIndex, field, value) => {
