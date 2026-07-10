@@ -10,7 +10,7 @@ const ProfileCard = () => {
     <div className="modal-overlay" onClick={() => setIsOpen(false)}>
       <div className="card" onClick={(e) => e.stopPropagation()}>
         <button className="close-btn" onClick={() => setIsOpen(false)}>×</button>
-        <img src="/patricia.jpg" alt="Patricia Guillén" className="card-img" />
+        <img src="/profile2.png" alt="Patricia Guillén" className="card-img" />
         <div className="card-content" style={{ padding: '25px', textAlign: 'left' }}>
           <h3 style={{ fontFamily: '"Great Vibes", cursive', fontSize: '3rem', color: '#fff', marginBottom: '15px', textAlign: 'center' }}>Bienvenidos</h3>
           <div style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '1.1rem', lineHeight: '1.6', color: '#fff' }}>
