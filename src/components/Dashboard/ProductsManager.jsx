@@ -194,30 +194,28 @@ const ProductsManager = () => {
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '20px' }}>
                 <div>
-                  <label style={{ fontSize: '0.75rem', color: '#aaa' }}>Foto Principal</label>
+                  <label style={{ fontSize: '0.75rem', color: '#aaa' }}>URL de la Foto Principal</label>
                   {formData.image && (
                     <div style={{ marginBottom: '10px' }}>
                       <img src={formData.image} alt="Principal" style={{ width: '100%', height: '120px', objectFit: 'cover', borderRadius: '4px' }} />
                     </div>
                   )}
-                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 'image')} disabled={uploadingImage} style={{ fontSize: '0.8rem', color: '#fff' }} />
+                  <input type="url" placeholder="https://..." value={formData.image} onChange={e => setFormData({ ...formData, image: e.target.value })} style={{ fontSize: '0.8rem' }} />
                 </div>
                 <div>
-                  <label style={{ fontSize: '0.75rem', color: '#aaa' }}>Foto Secundaria (Opcional)</label>
+                  <label style={{ fontSize: '0.75rem', color: '#aaa' }}>URL de la Foto Secundaria (Opcional)</label>
                   {formData.image2 && (
                     <div style={{ marginBottom: '10px' }}>
                       <img src={formData.image2} alt="Secundaria" style={{ width: '100%', height: '120px', objectFit: 'cover', borderRadius: '4px' }} />
                     </div>
                   )}
-                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 'image2')} disabled={uploadingImage} style={{ fontSize: '0.8rem', color: '#fff' }} />
+                  <input type="url" placeholder="https://..." value={formData.image2} onChange={e => setFormData({ ...formData, image2: e.target.value })} style={{ fontSize: '0.8rem' }} />
                 </div>
               </div>
 
-              {uploadingImage && <p style={{ color: '#d3b06d', fontSize: '0.85rem', marginBottom: '15px' }}>Subiendo imagen, por favor espera...</p>}
-
               <div style={{ display: 'flex', gap: '10px' }}>
-                <button type="submit" className="btn" style={{ flex: 1 }} disabled={uploadingImage}>Guardar Cambios</button>
-                <button type="button" className="btn2" onClick={() => setShowModal(false)} disabled={uploadingImage}>Cancelar</button>
+                <button type="submit" className="btn" style={{ flex: 1 }}>Guardar Cambios</button>
+                <button type="button" className="btn2" onClick={() => setShowModal(false)}>Cancelar</button>
               </div>
             </form>
           </div>
