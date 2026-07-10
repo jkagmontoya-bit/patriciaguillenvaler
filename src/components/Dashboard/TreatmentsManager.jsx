@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase/config';
-import { collection, onSnapshot, addDoc, updateDoc, doc, deleteDoc } from 'firebase/firestore';
+import { collection, onSnapshot, addDoc, updateDoc, doc, deleteDoc, query, limit } from 'firebase/firestore';
 
 const CATEGORIES = ['Faciales', 'Cejas y Pestañas', 'Maquillaje'];
 
@@ -11,8 +11,11 @@ const TreatmentsManager = () => {
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({ name: '', description: '', price: '', category: CATEGORIES[0] });
 
+  const [limitCount, setLimitCount] = useState(20);
+
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, "treatments"), (querySnapshot) => {
+    const q = query(collection(db, "treatments"), limit(limitCount));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const items = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       // Sort by category then name
       items.sort((a, b) => {
@@ -29,7 +32,7 @@ const TreatmentsManager = () => {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [limitCount]);
 
   const openNew = () => {
     setEditingId(null);
@@ -128,33 +131,40 @@ const TreatmentsManager = () => {
 
       <div className="table-responsive">
         {loading ? <p style={{ color: '#d3b06d' }}>Cargando tratamientos...</p> : (
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Tratamiento</th>
-                <th>Descripción</th>
-                <th>Precio</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {treatments.length === 0 ? (
-                <tr><td colSpan="4" style={{ textAlign: 'center' }}>No hay tratamientos registrados. Añade el primero.</td></tr>
-              ) : (
-                treatments.map((item) => (
-                  <tr key={item.id}>
-                    <td style={{ fontWeight: '600', color: '#d3b06d' }}>{item.name}</td>
-                    <td style={{ maxWidth: '300px', fontSize: '0.9rem', color: '#aaa' }}>{item.description}</td>
-                    <td style={{ fontWeight: '600' }}>S/ {(item.price || 0).toFixed(2)}</td>
-                    <td>
-                      <button className="action-btn" onClick={() => openEdit(item)}>Editar</button>
-                      <button className="action-btn delete" onClick={() => handleDelete(item.id)}>Eliminar</button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+          <>
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Tratamiento</th>
+                  <th>Descripción</th>
+                  <th>Precio</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {treatments.length === 0 ? (
+                  <tr><td colSpan="4" style={{ textAlign: 'center' }}>No hay tratamientos registrados. Añade el primero.</td></tr>
+                ) : (
+                  treatments.map((item) => (
+                    <tr key={item.id}>
+                      <td style={{ fontWeight: '600', color: '#d3b06d' }}>{item.name}</td>
+                      <td style={{ maxWidth: '300px', fontSize: '0.9rem', color: '#aaa' }}>{item.description}</td>
+                      <td style={{ fontWeight: '600' }}>S/ {(item.price || 0).toFixed(2)}</td>
+                      <td>
+                        <button className="action-btn" onClick={() => openEdit(item)}>Editar</button>
+                        <button className="action-btn delete" onClick={() => handleDelete(item.id)}>Eliminar</button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+            {treatments.length >= limitCount && (
+              <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                <button className="btn" onClick={() => setLimitCount(prev => prev + 20)}>Cargar más resultados</button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

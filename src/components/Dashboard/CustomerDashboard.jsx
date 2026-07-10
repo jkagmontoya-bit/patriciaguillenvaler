@@ -1,19 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { db } from '../../firebase/config';
-import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, limit } from 'firebase/firestore';
 
 const CustomerDashboard = ({ isMasterUser, onToggleView }) => {
   const { user, logout } = useAuth();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [limitCount, setLimitCount] = useState(20);
+
   useEffect(() => {
     if (!user) return;
     setLoading(true);
     const q = query(
       collection(db, 'sales'),
-      where('userId', '==', user.uid)
+      where('userId', '==', user.uid),
+      limit(limitCount)
     );
     
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -118,6 +121,13 @@ const CustomerDashboard = ({ isMasterUser, onToggleView }) => {
                   ))}
                 </tbody>
               </table>
+              {orders.length >= limitCount && (
+                <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                  <button onClick={() => setLimitCount(prev => prev + 20)} style={{ padding: '10px 20px', background: '#d3b06d', color: '#111', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}>
+                    Cargar más resultados
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>

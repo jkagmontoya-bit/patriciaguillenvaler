@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase/config';
-import { collection, getDocs, addDoc, updateDoc, doc, serverTimestamp, runTransaction } from 'firebase/firestore';
+import { collection, getDocs, addDoc, updateDoc, doc, serverTimestamp, runTransaction, onSnapshot, query, orderBy, limit } from 'firebase/firestore';
 
 const CATEGORIES = ['Skincare', 'Limpieza', 'Tratamientos', 'Hidratación', 'Protector Solar', 'Packs'];
 
@@ -28,10 +28,12 @@ const PurchasesTable = () => {
     name: '', category: '', description: '', purchasePrice: '', salePrice: '', wholesalePrice: '', image: '', batch: '', expiryDate: ''
   });
 
+  const [limitCount, setLimitCount] = useState(20);
+
   useEffect(() => {
-    const unsubscribePurchases = onSnapshot(collection(db, "purchases"), (purchSnap) => {
+    const q = query(collection(db, "purchases"), orderBy("date", "desc"), limit(limitCount));
+    const unsubscribePurchases = onSnapshot(q, (purchSnap) => {
       const pItems = purchSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      pItems.sort((a, b) => new Date(b.date) - new Date(a.date));
       setPurchases(pItems);
       
       const unsubscribeInventory = onSnapshot(collection(db, "inventory"), (invSnap) => {
@@ -45,12 +47,25 @@ const PurchasesTable = () => {
       
       return () => unsubscribeInventory();
     }, (error) => {
-      console.error("Error fetching purchases: ", error);
-      setLoading(false);
+      console.error("Error fetching purchases, fallback: ", error);
+      const qFallback = query(collection(db, "purchases"), limit(limitCount));
+      const unsubscribeFallback = onSnapshot(qFallback, (purchSnap) => {
+        const pItems = purchSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        pItems.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+        setPurchases(pItems);
+        
+        const unsubscribeInventoryFallback = onSnapshot(collection(db, "inventory"), (invSnap) => {
+          const iItems = invSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          setInventory(iItems);
+          setLoading(false);
+        });
+        return () => unsubscribeInventoryFallback();
+      });
+      return () => unsubscribeFallback();
     });
 
     return () => unsubscribePurchases();
-  }, []);
+  }, [limitCount]);
 
 
 
@@ -358,32 +373,39 @@ const PurchasesTable = () => {
 
       <div className="table-responsive">
         {loading ? <p style={{color: '#d3b06d'}}>Cargando histórico de compras...</p> : (
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Fecha</th>
-                <th>Factura</th>
-                <th>Proveedor (RUC)</th>
-                <th>Ítems</th>
-                <th>Monto Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {purchases.length === 0 ? (
-                <tr><td colSpan="5" style={{textAlign: 'center'}}>No hay compras registradas</td></tr>
-              ) : (
-                purchases.map((purchase) => (
-                  <tr key={purchase.id}>
-                    <td>{purchase.date || purchase.createdAt?.substring(0,10) || '—'}</td>
-                    <td><strong>{purchase.invoiceNumber || '—'}</strong></td>
-                    <td>{purchase.supplier} <br/><span style={{fontSize: '0.75rem', color: '#888'}}>{purchase.ruc}</span></td>
-                    <td>{(purchase.items || []).length} prod(s)</td>
-                    <td style={{color: '#ff4d4d', fontWeight: 'bold'}}>- S/ {(purchase.total || 0).toFixed(2)}</td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+          <>
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Factura</th>
+                  <th>Proveedor (RUC)</th>
+                  <th>Ítems</th>
+                  <th>Monto Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {purchases.length === 0 ? (
+                  <tr><td colSpan="5" style={{textAlign: 'center'}}>No hay compras registradas</td></tr>
+                ) : (
+                  purchases.map((purchase) => (
+                    <tr key={purchase.id}>
+                      <td>{purchase.date || purchase.createdAt?.substring(0,10) || '—'}</td>
+                      <td><strong>{purchase.invoiceNumber || '—'}</strong></td>
+                      <td>{purchase.supplier} <br/><span style={{fontSize: '0.75rem', color: '#888'}}>{purchase.ruc}</span></td>
+                      <td>{(purchase.items || []).length} prod(s)</td>
+                      <td style={{color: '#ff4d4d', fontWeight: 'bold'}}>- S/ {(Number(purchase.total || 0)).toFixed(2)}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+            {purchases.length >= limitCount && (
+              <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                <button className="btn" onClick={() => setLimitCount(prev => prev + 20)}>Cargar más resultados</button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

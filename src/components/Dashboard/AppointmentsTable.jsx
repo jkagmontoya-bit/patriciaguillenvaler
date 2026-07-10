@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase/config';
-import { collection, onSnapshot, addDoc, updateDoc, doc, deleteDoc } from 'firebase/firestore';
+import { collection, onSnapshot, addDoc, updateDoc, doc, deleteDoc, query, orderBy, limit } from 'firebase/firestore';
 import './AppointmentsTable.css';
 
 const AppointmentsTable = () => {
@@ -9,8 +9,11 @@ const AppointmentsTable = () => {
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({ client: '', service: '', date: '', time: '', status: 'Pendiente' });
 
+  const [limitCount, setLimitCount] = useState(20);
+
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, "appointments"), (querySnapshot) => {
+    const q = query(collection(db, "appointments"), orderBy("date", "asc"), limit(limitCount));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const items = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
@@ -21,11 +24,21 @@ const AppointmentsTable = () => {
       setLoading(false);
     }, (error) => {
       console.error("Error fetching appointments: ", error);
-      setLoading(false);
+      const qFallback = query(collection(db, "appointments"), limit(limitCount));
+      const unsubscribeFallback = onSnapshot(qFallback, (querySnapshot) => {
+        const items = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        items.sort((a, b) => new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`));
+        setAppointments(items);
+        setLoading(false);
+      });
+      return () => unsubscribeFallback();
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [limitCount]);
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -83,47 +96,54 @@ const AppointmentsTable = () => {
 
       <div className="table-responsive">
         {loading ? <p style={{color: '#d3b06d'}}>Cargando citas...</p> : (
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Cliente</th>
-                <th>Servicio</th>
-                <th>Fecha</th>
-                <th>Hora</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {appointments.length === 0 ? (
-                <tr><td colSpan="6" style={{textAlign: 'center'}}>No hay citas registradas</td></tr>
-              ) : (
-                appointments.map((appt) => (
-                  <tr key={appt.id}>
-                    <td>{appt.client}</td>
-                    <td>{appt.service}</td>
-                    <td>{appt.date}</td>
-                    <td>{appt.time}</td>
-                    <td>
-                      <select 
-                        value={appt.status || 'Pendiente'} 
-                        onChange={(e) => updateStatus(appt.id, e.target.value)}
-                        className={`status-select ${(appt.status || 'Pendiente').toLowerCase()}`}
-                      >
-                        <option value="Pendiente">Pendiente</option>
-                        <option value="Confirmada">Confirmada</option>
-                        <option value="Cancelada">Cancelada</option>
-                        <option value="Completada">Completada</option>
-                      </select>
-                    </td>
-                    <td>
-                      <button className="action-btn delete" onClick={() => handleDelete(appt.id)}>Eliminar</button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+          <>
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Cliente</th>
+                  <th>Servicio</th>
+                  <th>Fecha</th>
+                  <th>Hora</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {appointments.length === 0 ? (
+                  <tr><td colSpan="6" style={{textAlign: 'center'}}>No hay citas registradas</td></tr>
+                ) : (
+                  appointments.map((appt) => (
+                    <tr key={appt.id}>
+                      <td>{appt.client}</td>
+                      <td>{appt.service}</td>
+                      <td>{appt.date}</td>
+                      <td>{appt.time}</td>
+                      <td>
+                        <select 
+                          value={appt.status || 'Pendiente'} 
+                          onChange={(e) => updateStatus(appt.id, e.target.value)}
+                          className={`status-select ${(appt.status || 'Pendiente').toLowerCase()}`}
+                        >
+                          <option value="Pendiente">Pendiente</option>
+                          <option value="Confirmada">Confirmada</option>
+                          <option value="Cancelada">Cancelada</option>
+                          <option value="Completada">Completada</option>
+                        </select>
+                      </td>
+                      <td>
+                        <button className="action-btn delete" onClick={() => handleDelete(appt.id)}>Eliminar</button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+            {appointments.length >= limitCount && (
+              <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                <button className="btn" onClick={() => setLimitCount(prev => prev + 20)}>Cargar más resultados</button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

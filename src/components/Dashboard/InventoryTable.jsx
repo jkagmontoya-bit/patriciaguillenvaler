@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase/config';
-import { collection, onSnapshot, addDoc, updateDoc, doc, deleteDoc } from 'firebase/firestore';
+import { collection, onSnapshot, addDoc, updateDoc, doc, deleteDoc, query, limit } from 'firebase/firestore';
 
 const InventoryTable = () => {
   const [inventory, setInventory] = useState([]);
@@ -8,8 +8,10 @@ const InventoryTable = () => {
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({ name: '', price: '', stock: '' });
 
+  const [limitCount, setLimitCount] = useState(20);
+
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, "inventory"), (querySnapshot) => {
+    const unsubscribe = onSnapshot(query(collection(db, "inventory"), limit(limitCount)), (querySnapshot) => {
       const items = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
@@ -22,7 +24,7 @@ const InventoryTable = () => {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [limitCount]);
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -75,36 +77,43 @@ const InventoryTable = () => {
 
       <div className="table-responsive">
         {loading ? <p style={{color: '#d3b06d'}}>Cargando inventario...</p> : (
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Producto</th>
-                <th>Precio</th>
-                <th>Stock</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {inventory.length === 0 ? (
-                <tr><td colSpan="4" style={{textAlign: 'center'}}>No hay productos en inventario</td></tr>
-              ) : (
-                inventory.map((item) => (
-                  <tr key={item.id}>
-                    <td>{item.name}</td>
-                    <td>S/ {(item.price || 0).toFixed(2)}</td>
-                    <td>
-                      <span style={{color: item.stock <= 5 ? '#ff4d4d' : '#28a745', fontWeight: 'bold'}}>
-                        {item.stock} uds.
-                      </span>
-                    </td>
-                    <td>
-                      <button className="action-btn delete" onClick={() => handleDelete(item.id)}>Eliminar</button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+          <>
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Producto</th>
+                  <th>Precio</th>
+                  <th>Stock</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {inventory.length === 0 ? (
+                  <tr><td colSpan="4" style={{textAlign: 'center'}}>No hay productos en inventario</td></tr>
+                ) : (
+                  inventory.map((item) => (
+                    <tr key={item.id}>
+                      <td>{item.name}</td>
+                      <td>S/ {(item.price || 0).toFixed(2)}</td>
+                      <td>
+                        <span style={{color: item.stock <= 5 ? '#ff4d4d' : '#28a745', fontWeight: 'bold'}}>
+                          {item.stock} uds.
+                        </span>
+                      </td>
+                      <td>
+                        <button className="action-btn delete" onClick={() => handleDelete(item.id)}>Eliminar</button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+            {inventory.length >= limitCount && (
+              <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                <button className="btn" onClick={() => setLimitCount(prev => prev + 20)}>Cargar más resultados</button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase/config';
-import { collection, onSnapshot, updateDoc, doc, deleteDoc } from 'firebase/firestore';
+import { collection, onSnapshot, updateDoc, doc, deleteDoc, query, limit } from 'firebase/firestore';
 
 const CATEGORIES = ['Skincare', 'Limpieza', 'Tratamientos', 'Hidratación', 'Protector Solar', 'Packs'];
 
@@ -15,8 +15,10 @@ const ProductsManager = () => {
     name: '', description: '', category: '', price: '', wholesalePrice: '', stock: '', image: '', sku: '', batch: '', expiryDate: ''
   });
 
+  const [limitCount, setLimitCount] = useState(20);
+
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, "inventory"), (querySnapshot) => {
+    const unsubscribe = onSnapshot(query(collection(db, "inventory"), limit(limitCount)), (querySnapshot) => {
       const items = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setProducts(items);
       setLoading(false);
@@ -26,7 +28,7 @@ const ProductsManager = () => {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [limitCount]);
 
   const openEdit = (item) => {
     setEditingId(item.id);
@@ -184,7 +186,8 @@ const ProductsManager = () => {
 
       <div className="table-responsive">
         {loading ? <p style={{ color: '#d3b06d' }}>Cargando inventario...</p> : (
-          <table className="admin-table">
+          <>
+            <table className="admin-table">
             <thead>
               <tr>
                 <th>SKU</th>
@@ -248,6 +251,12 @@ const ProductsManager = () => {
               )}
             </tbody>
           </table>
+          {products.length >= limitCount && (
+            <div style={{ textAlign: 'center', marginTop: '20px' }}>
+              <button className="btn" onClick={() => setLimitCount(prev => prev + 20)}>Cargar más resultados</button>
+            </div>
+          )}
+        </>
         )}
       </div>
     </div>
