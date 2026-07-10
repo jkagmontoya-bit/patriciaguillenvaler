@@ -11,8 +11,9 @@ const Hero = () => {
         <p className="small text-gold">BIENVENIDO(A) A NUESTRO ESTUDIO</p>
         <h1 className="font-serif">Patricia<br/>Guillén Valer</h1>
         <h2 className="text-gold">ESTÉTICA & SKIN CARE</h2>
-        <h3 className="font-serif">Tu piel. Tu poder.<br/>Tu mejor versión.</h3>
-        <p className="lead">Belleza que transforma. Cuidado que perdura.</p>
+        <h3 className="font-serif" style={{ fontFamily: '"Bona Nova", serif', fontSize: '1.8rem', lineHeight: '1.4' }}>
+          Descubre el brillo que llevas dentro, donde florece la belleza y nace la confianza.
+        </h3>
         
         <div className="actions">
           <a className="btn" href="https://wa.me/51962324552" target="_blank" rel="noopener noreferrer">Agenda tu cita</a>
