@@ -11,8 +11,17 @@ const Hero = () => {
         <p className="small text-gold">BIENVENIDO(A) A NUESTRO ESTUDIO</p>
         <h1 className="font-serif">Patricia<br/>Guillén Valer</h1>
         <h2 className="text-gold">ESTÉTICA & SKIN CARE</h2>
-        <h3 style={{ fontFamily: '"Great Vibes", cursive', fontSize: '2.5rem', lineHeight: '1.2', fontWeight: '400', color: '#fff' }}>
-          Descubre el brillo que llevas dentro, donde florece la belleza y nace la confianza.
+        <h3 style={{ 
+          fontFamily: '"Great Vibes", cursive', 
+          fontSize: 'clamp(3rem, 5vw, 4.5rem)', 
+          lineHeight: '1.2', 
+          fontWeight: '400', 
+          color: '#fff',
+          textShadow: '0 0 8px rgba(255,255,255,0.6), 0 0 15px rgba(211,176,109,0.8), 0 0 25px rgba(211,176,109,0.5)',
+          margin: '20px 0',
+          padding: '0 10px'
+        }}>
+          "Descubre el brillo que llevas dentro, donde florece la belleza y nace la confianza."
         </h3>
         
         <div className="actions">
