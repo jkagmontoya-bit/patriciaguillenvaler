@@ -21,12 +21,19 @@ const Services = () => {
       try {
         const querySnapshot = await getDocs(collection(db, "treatments"));
         if (!querySnapshot.empty) {
-          const fetched = querySnapshot.docs.map(doc => ({
-            title: doc.data().name,
-            description: doc.data().description,
-            price: doc.data().price
-          }));
-          setServices(fetched);
+          const fetched = querySnapshot.docs
+            .filter(doc => doc.data().active !== false)
+            .map(doc => ({
+              title: doc.data().name,
+              description: doc.data().description,
+              price: doc.data().price
+            }));
+          
+          if (fetched.length > 0) {
+            setServices(fetched);
+          } else {
+            setServices(fallbackServices);
+          }
         }
       } catch (error) {
         console.error("Error fetching treatments: ", error);
