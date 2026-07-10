@@ -17,7 +17,6 @@ const Hero = () => {
           lineHeight: '1.2', 
           fontWeight: '400', 
           color: '#fff',
-          textShadow: '0 0 8px rgba(255,255,255,0.6), 0 0 15px rgba(211,176,109,0.8), 0 0 25px rgba(211,176,109,0.5)',
           margin: '20px 0',
           padding: '0 10px'
         }}>
