@@ -34,7 +34,6 @@ const InventoryTable = () => {
       });
       setShowModal(false);
       setFormData({ name: '', price: '', stock: '' });
-      fetchInventory();
     } catch (error) {
       console.error("Error adding product: ", error);
     }
@@ -44,7 +43,6 @@ const InventoryTable = () => {
     if(window.confirm('¿Seguro que deseas eliminar este producto?')) {
       try {
         await deleteDoc(doc(db, "inventory", id));
-        fetchInventory();
       } catch (error) {
         console.error("Error deleting: ", error);
       }
@@ -93,7 +91,7 @@ const InventoryTable = () => {
                 inventory.map((item) => (
                   <tr key={item.id}>
                     <td>{item.name}</td>
-                    <td>S/ {item.price.toFixed(2)}</td>
+                    <td>S/ {(item.price || 0).toFixed(2)}</td>
                     <td>
                       <span style={{color: item.stock <= 5 ? '#ff4d4d' : '#28a745', fontWeight: 'bold'}}>
                         {item.stock} uds.

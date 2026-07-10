@@ -33,7 +33,6 @@ const AppointmentsTable = () => {
       await addDoc(collection(db, "appointments"), formData);
       setShowModal(false);
       setFormData({ client: '', service: '', date: '', time: '', status: 'Pendiente' });
-      fetchAppointments();
     } catch (error) {
       console.error("Error adding appointment: ", error);
     }
@@ -42,7 +41,6 @@ const AppointmentsTable = () => {
   const updateStatus = async (id, newStatus) => {
     try {
       await updateDoc(doc(db, "appointments", id), { status: newStatus });
-      fetchAppointments();
     } catch (error) {
       console.error("Error updating status: ", error);
     }
@@ -52,7 +50,6 @@ const AppointmentsTable = () => {
     if(window.confirm('¿Seguro que deseas eliminar esta cita?')) {
       try {
         await deleteDoc(doc(db, "appointments", id));
-        fetchAppointments();
       } catch (error) {
         console.error("Error deleting: ", error);
       }

@@ -89,7 +89,7 @@ const ProductsPage = () => {
                   <img src={product.image || '/ordinary.jpg'} alt={product.name} />
                 </div>
                 <h4 className="font-serif">{product.name}</h4>
-                <p className="price">S/ {product.price.toFixed(2)}</p>
+                <p className="price">S/ {(product.price || 0).toFixed(2)}</p>
                 <button 
                   className="btn" 
                   onClick={() => addToCart(product)} 

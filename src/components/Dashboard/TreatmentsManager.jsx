@@ -59,7 +59,6 @@ const TreatmentsManager = () => {
       setShowModal(false);
       setFormData({ name: '', description: '', price: '' });
       setEditingId(null);
-      fetchTreatments();
     } catch (error) {
       console.error("Error saving treatment: ", error);
     }
@@ -69,7 +68,6 @@ const TreatmentsManager = () => {
     if (window.confirm('¿Seguro que deseas eliminar este tratamiento?')) {
       try {
         await deleteDoc(doc(db, "treatments", id));
-        fetchTreatments();
       } catch (error) {
         console.error("Error deleting: ", error);
       }

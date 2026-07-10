@@ -66,7 +66,6 @@ const ProductsManager = () => {
       await updateDoc(doc(db, "inventory", editingId), payload);
       setShowModal(false);
       setEditingId(null);
-      fetchProducts();
     } catch (error) {
       console.error("Error updating product: ", error);
     }
@@ -76,7 +75,6 @@ const ProductsManager = () => {
     if (window.confirm('¿Seguro que deseas eliminar este producto permanentemente?')) {
       try {
         await deleteDoc(doc(db, "inventory", id));
-        fetchProducts();
       } catch (error) {
         console.error("Error deleting: ", error);
       }
