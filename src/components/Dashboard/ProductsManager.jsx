@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { db } from '../../firebase/config';
+import { db, storage } from '../../firebase/config';
 import { collection, onSnapshot, updateDoc, doc, deleteDoc, query, limit } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const CATEGORIES = ['Skincare', 'Limpieza', 'Tratamientos', 'Hidratación', 'Protector Solar', 'Packs'];
 
@@ -11,8 +12,9 @@ const ProductsManager = () => {
   // Note: New products are now created via Purchases (ERP). We keep Edit/Delete here.
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [formData, setFormData] = useState({
-    name: '', description: '', category: '', price: '', wholesalePrice: '', stock: '', image: '', sku: '', batch: '', expiryDate: ''
+    name: '', description: '', category: '', price: '', wholesalePrice: '', stock: '', image: '', image2: '', sku: '', batch: '', expiryDate: ''
   });
 
   const [limitCount, setLimitCount] = useState(20);
@@ -40,11 +42,30 @@ const ProductsManager = () => {
       wholesalePrice: String(item.wholesalePrice || ''),
       stock: String(item.stock || ''),
       image: item.image || '',
+      image2: item.image2 || '',
       sku: item.sku || '',
       batch: item.batch || '',
       expiryDate: item.expiryDate || ''
     });
     setShowModal(true);
+  };
+
+  const handleImageUpload = async (e, imageField) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    setUploadingImage(true);
+    try {
+      // Create a unique file name
+      const fileRef = ref(storage, `inventory/${editingId || Date.now()}_${file.name}`);
+      await uploadBytes(fileRef, file);
+      const url = await getDownloadURL(fileRef);
+      setFormData(prev => ({ ...prev, [imageField]: url }));
+    } catch (error) {
+      console.error("Error uploading image: ", error);
+      alert("Error subiendo la imagen. Asegúrate de haber habilitado 'Storage' en Firebase.");
+    }
+    setUploadingImage(false);
   };
 
   const handleSave = async (e) => {
@@ -59,6 +80,7 @@ const ProductsManager = () => {
       wholesalePrice: parseFloat(formData.wholesalePrice || 0),
       stock: parseInt(formData.stock),
       image: formData.image,
+      image2: formData.image2,
       sku: formData.sku,
       batch: formData.batch,
       expiryDate: formData.expiryDate
@@ -170,14 +192,32 @@ const ProductsManager = () => {
                 </div>
               </div>
 
-              <div style={{ marginBottom: '20px' }}>
-                <label style={{ fontSize: '0.75rem', color: '#aaa' }}>URL de la Imagen</label>
-                <input type="url" value={formData.image} onChange={e => setFormData({ ...formData, image: e.target.value })} />
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '20px' }}>
+                <div>
+                  <label style={{ fontSize: '0.75rem', color: '#aaa' }}>Foto Principal</label>
+                  {formData.image && (
+                    <div style={{ marginBottom: '10px' }}>
+                      <img src={formData.image} alt="Principal" style={{ width: '100%', height: '120px', objectFit: 'cover', borderRadius: '4px' }} />
+                    </div>
+                  )}
+                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 'image')} disabled={uploadingImage} style={{ fontSize: '0.8rem', color: '#fff' }} />
+                </div>
+                <div>
+                  <label style={{ fontSize: '0.75rem', color: '#aaa' }}>Foto Secundaria (Opcional)</label>
+                  {formData.image2 && (
+                    <div style={{ marginBottom: '10px' }}>
+                      <img src={formData.image2} alt="Secundaria" style={{ width: '100%', height: '120px', objectFit: 'cover', borderRadius: '4px' }} />
+                    </div>
+                  )}
+                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 'image2')} disabled={uploadingImage} style={{ fontSize: '0.8rem', color: '#fff' }} />
+                </div>
               </div>
 
+              {uploadingImage && <p style={{ color: '#d3b06d', fontSize: '0.85rem', marginBottom: '15px' }}>Subiendo imagen, por favor espera...</p>}
+
               <div style={{ display: 'flex', gap: '10px' }}>
-                <button type="submit" className="btn" style={{ flex: 1 }}>Guardar Cambios</button>
-                <button type="button" className="btn2" onClick={() => setShowModal(false)}>Cancelar</button>
+                <button type="submit" className="btn" style={{ flex: 1 }} disabled={uploadingImage}>Guardar Cambios</button>
+                <button type="button" className="btn2" onClick={() => setShowModal(false)} disabled={uploadingImage}>Cancelar</button>
               </div>
             </form>
           </div>
