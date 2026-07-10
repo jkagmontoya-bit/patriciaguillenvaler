@@ -40,7 +40,11 @@ const AvailabilityManager = () => {
       
       const unsubscribeBlockouts = onSnapshot(collection(db, "schedule_blockouts"), (blockSnap) => {
         const fetchedBlockouts = blockSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-        fetchedBlockouts.sort((a, b) => a.date.localeCompare(b.date));
+        fetchedBlockouts.sort((a, b) => {
+          const dateA = typeof a.date === 'string' ? a.date : '';
+          const dateB = typeof b.date === 'string' ? b.date : '';
+          return dateA.localeCompare(dateB);
+        });
         setBlockouts(fetchedBlockouts);
         setLoading(false);
       }, (error) => {
@@ -101,7 +105,7 @@ const AvailabilityManager = () => {
   };
 
   const isPast = (dateStr) => {
-    if (!dateStr) return false;
+    if (!dateStr || typeof dateStr !== 'string') return false;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const [y, m, d] = dateStr.split('-');
