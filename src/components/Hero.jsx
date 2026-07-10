@@ -24,7 +24,6 @@ const Hero = () => {
         </h3>
         
         <div className="actions">
-          <a className="btn" href="https://wa.me/51962324552" target="_blank" rel="noopener noreferrer">Agenda tu cita</a>
           <a className="btn2" href="#estudio">Conoce nuestro estudio</a>
         </div>
       </div>

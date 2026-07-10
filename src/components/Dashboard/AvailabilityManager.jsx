@@ -37,6 +37,7 @@ const AvailabilityManager = () => {
       
       fetchedTemplates.sort((a, b) => a.dayOfWeek - b.dayOfWeek);
       setTemplates(fetchedTemplates);
+      setLoading(false);
     }, (error) => {
       console.error("Error fetching schedules: ", error);
       setLoading(false);
