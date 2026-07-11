@@ -40,7 +40,6 @@ const Header = () => {
         <Link to="/"><img className="logo" src="/LOGO_transparent.png" alt="Patricia Guillén Valer Logo" /></Link>
         <nav className="nav">
           <a href="/#inicio">Inicio</a>
-          <a href="/#sobre-mi">Sobre mí</a>
           <a href="/#servicios">Servicios</a>
           <Link to="/productos">Productos</Link>
           <a href="/#estudio">Estudio</a>

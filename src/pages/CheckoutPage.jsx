@@ -1,22 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../firebase/config';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { useJsApiLoader, Autocomplete, GoogleMap, Marker } from '@react-google-maps/api';
-
-const mapContainerStyle = {
-  width: '100%',
-  height: '250px',
-  marginTop: '10px',
-  borderRadius: '4px'
-};
-
-const defaultCenter = {
-  lat: -12.0464, // Lima, Peru
-  lng: -77.0428
-};
 
 const CheckoutPage = () => {
   const { cart, cartTotal, clearCart, updateQuantity, removeFromCart } = useCart();
@@ -62,49 +49,9 @@ const CheckoutPage = () => {
     metodoPago: '' // tarjeta, yape, etc
   });
 
-  const [autocompleteRef, setAutocompleteRef] = useState(null);
-  const [mapCenter, setMapCenter] = useState(defaultCenter);
-  const [markerPosition, setMarkerPosition] = useState(null);
-
-  // Cargamos el script de Google Maps usando la API Key de entorno
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '',
-    libraries: ['places']
-  });
-
   const handleChange = (e) => {
     const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
     setFormData({...formData, [e.target.name]: value});
-  };
-
-  const onLoad = (autocomplete) => {
-    setAutocompleteRef(autocomplete);
-  };
-
-  const onPlaceChanged = () => {
-    if (autocompleteRef !== null) {
-      const place = autocompleteRef.getPlace();
-      if (place && place.formatted_address) {
-        setFormData(prev => ({ ...prev, direccion: place.formatted_address }));
-        
-        // Si el lugar tiene coordenadas (geometry), actualizamos el mapa
-        if (place.geometry && place.geometry.location) {
-          const lat = place.geometry.location.lat();
-          const lng = place.geometry.location.lng();
-          setMapCenter({ lat, lng });
-          setMarkerPosition({ lat, lng });
-        }
-      }
-    }
-  };
-
-  const handleMapClick = (e) => {
-    const lat = e.latLng.lat();
-    const lng = e.latLng.lng();
-    setMarkerPosition({ lat, lng });
-    
-    // Opcionalmente, podrías usar Geocoding inverso aquí para obtener el nombre de la calle, 
-    // pero requeriría habilitar la API de Geocoding. Por ahora, solo ponemos el pin.
   };
 
   const handleNextStep = (step, e) => {
@@ -259,51 +206,15 @@ const CheckoutPage = () => {
                   </div>
                   <div style={{...formRowStyle, alignItems: 'flex-start', flexDirection: 'column', marginBottom: '20px'}}>
                     <label style={{...labelStyle, width: '100%', marginBottom: '5px', fontWeight: 'bold'}}>Dirección de Entrega</label>
-                    {isLoaded ? (
-                      <div style={{width: '100%'}}>
-                        <Autocomplete 
-                          onLoad={onLoad} 
-                          onPlaceChanged={onPlaceChanged} 
-                          style={{width: '100%'}}
-                          options={{ componentRestrictions: { country: 'pe' } }}
-                        >
-                          <input 
-                            required 
-                            type="text" 
-                            name="direccion" 
-                            value={formData.direccion} 
-                            onChange={handleChange} 
-                            placeholder="Empieza a escribir tu calle y selecciona una opción..." 
-                            style={{...inputStyle, width: '100%', padding: '12px'}} 
-                          />
-                        </Autocomplete>
-                        
-                        <GoogleMap
-                          mapContainerStyle={mapContainerStyle}
-                          center={mapCenter}
-                          zoom={14}
-                          onClick={handleMapClick}
-                          options={{ streetViewControl: false, mapTypeControl: false }}
-                        >
-                          {markerPosition && (
-                            <Marker position={markerPosition} />
-                          )}
-                        </GoogleMap>
-                        <p style={{fontSize: '0.8rem', color: '#666', marginTop: '5px'}}>
-                          *Escribe tu dirección arriba para autocompletar. Puedes verificar tu ubicación en el mapa.
-                        </p>
-                      </div>
-                    ) : (
-                      <input 
-                        required 
-                        type="text" 
-                        name="direccion" 
-                        value={formData.direccion} 
-                        onChange={handleChange} 
-                        style={{...inputStyle, width: '100%'}} 
-                        placeholder="Cargando mapa de Google..."
-                      />
-                    )}
+                    <input 
+                      required 
+                      type="text" 
+                      name="direccion" 
+                      value={formData.direccion} 
+                      onChange={handleChange} 
+                      placeholder="Ej. Av. Los Fresnos 123, Urb. Primavera" 
+                      style={{...inputStyle, width: '100%', padding: '12px'}} 
+                    />
                   </div>
                   <div style={formRowStyle}>
                     <label style={labelStyle}>Dirección Complementaria</label>
