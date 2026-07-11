@@ -197,16 +197,21 @@ const PurchasesTable = () => {
               {/* Cabecera de Factura */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', background: '#111', padding: '15px', borderRadius: '8px', border: '1px solid #333', marginBottom: '20px' }}>
                 <div>
-                  <label style={{ fontSize: '0.8rem', color: '#aaa', display: 'block', marginBottom: '5px' }}>RUC del Proveedor</label>
-                  <input type="text" required value={invoiceData.ruc} onChange={e => setInvoiceData({...invoiceData, ruc: e.target.value})} style={{ width: '100%' }} />
+                  <label style={{ fontSize: '0.8rem', color: '#aaa', display: 'block', marginBottom: '5px' }}>RUC del Proveedor (11 dígitos)</label>
+                  <input type="text" required pattern="\d{11}" maxLength="11" title="Debe contener exactamente 11 números" placeholder="Ej. 20123456789" value={invoiceData.ruc} onChange={e => setInvoiceData({...invoiceData, ruc: e.target.value.replace(/\D/g, '')})} style={{ width: '100%' }} />
                 </div>
                 <div>
                   <label style={{ fontSize: '0.8rem', color: '#aaa', display: 'block', marginBottom: '5px' }}>Nombre / Razón Social</label>
                   <input type="text" required value={invoiceData.supplier} onChange={e => setInvoiceData({...invoiceData, supplier: e.target.value})} style={{ width: '100%' }} />
                 </div>
                 <div>
-                  <label style={{ fontSize: '0.8rem', color: '#aaa', display: 'block', marginBottom: '5px' }}>Nº de Factura</label>
-                  <input type="text" required value={invoiceData.invoiceNumber} onChange={e => setInvoiceData({...invoiceData, invoiceNumber: e.target.value})} style={{ width: '100%' }} />
+                  <label style={{ fontSize: '0.8rem', color: '#aaa', display: 'block', marginBottom: '5px' }}>Nº de Factura (xxxx-xxxxxxxx)</label>
+                  <input type="text" required pattern="[A-Za-z0-9]{4}-\d{8}" maxLength="13" title="El formato debe ser 4 caracteres, un guión y 8 números (Ej. F001-00001234)" placeholder="F001-00001234" value={invoiceData.invoiceNumber} onChange={e => {
+                    let val = e.target.value.toUpperCase();
+                    // Auto-insert dash
+                    if(val.length === 4 && !val.includes('-')) val = val + '-';
+                    setInvoiceData({...invoiceData, invoiceNumber: val});
+                  }} style={{ width: '100%' }} />
                 </div>
                 <div>
                   <label style={{ fontSize: '0.8rem', color: '#aaa', display: 'block', marginBottom: '5px' }}>Fecha de Emisión</label>
