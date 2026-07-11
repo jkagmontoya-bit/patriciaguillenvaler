@@ -1,9 +1,10 @@
 .hero {
   min-height: 100vh;
   background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.55)), url('/hero-bg-new.jpg');
-  background-position: center 25%;
-  background-size: cover;
-  background-attachment: fixed;
+  background-color: #000;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: contain;
   position: relative;
   padding: 150px 6% 100px;
   display: flex;
