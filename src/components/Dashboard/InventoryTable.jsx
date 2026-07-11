@@ -6,9 +6,11 @@ const InventoryTable = () => {
   const [inventory, setInventory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [formData, setFormData] = useState({ name: '', price: '', stock: '' });
+  const [formData, setFormData] = useState({ name: '', price: '', stock: '', category: '' });
 
   const [limitCount, setLimitCount] = useState(20);
+
+  const CATEGORIES = ['Skincare', 'Limpieza', 'Tratamientos', 'Hidratación', 'Protector Solar', 'Packs'];
 
   useEffect(() => {
     const unsubscribe = onSnapshot(query(collection(db, "inventory"), limit(limitCount)), (querySnapshot) => {
@@ -35,7 +37,7 @@ const InventoryTable = () => {
         stock: parseInt(formData.stock)
       });
       setShowModal(false);
-      setFormData({ name: '', price: '', stock: '' });
+      setFormData({ name: '', price: '', stock: '', category: '' });
     } catch (error) {
       console.error("Error adding product: ", error);
     }
@@ -64,6 +66,10 @@ const InventoryTable = () => {
             <h4>Nuevo Producto</h4>
             <form onSubmit={handleSave}>
               <input type="text" placeholder="Nombre del Producto" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
+              <select required value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} style={{ width: '100%', marginBottom: '10px', padding: '10px', borderRadius: '4px', background: '#222', color: '#fff', border: '1px solid #444' }}>
+                <option value="" disabled>Seleccionar Categoría</option>
+                {CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+              </select>
               <input type="number" step="0.01" placeholder="Precio (S/)" required value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} />
               <input type="number" placeholder="Stock Inicial" required value={formData.stock} onChange={e => setFormData({...formData, stock: e.target.value})} />
               <div style={{marginTop: '15px', display: 'flex', gap: '10px'}}>
