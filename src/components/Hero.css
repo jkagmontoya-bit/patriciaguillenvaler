@@ -1,6 +1,6 @@
 .hero {
   min-height: 100vh;
-  background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.55)), url('/ebc95aef-cbea-4624-b530-ff14469f033d.png') center/cover;
+  background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.55)), url('/hero-bg-new.jpg') center/cover;
   position: relative;
   padding: 150px 6% 100px;
   display: flex;
